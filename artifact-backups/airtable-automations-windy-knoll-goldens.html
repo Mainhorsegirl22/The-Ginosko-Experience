@@ -1,0 +1,410 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Airtable Automations — Windy Knoll Goldens</title>
+<style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style>
+</head>
+<body>
+<style>
+  :root {
+    --paper: #FBF8F1;
+    --paper-2: #F4EEE1;
+    --card: #FFFFFF;
+    --ink: #26312B;
+    --ink-soft: #4B5851;
+    --muted: #857F72;
+    --line: #E4DCCB;
+    --gold: #B07D22;
+    --gold-soft: #F0E4C6;
+    --pine: #2F5D4E;
+    --pine-soft: #DCE8E1;
+    --good: #3C7A56;
+    --warn: #B26A15;
+    --crit: #A6432F;
+    --shadow: 0 1px 2px rgba(38,49,43,.05), 0 6px 20px rgba(38,49,43,.06);
+    --radius: 14px;
+    --maxw: 780px;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #191E1B;
+      --paper-2: #212824;
+      --card: #232A26;
+      --ink: #ECE7DA;
+      --ink-soft: #C3C0B4;
+      --muted: #948E80;
+      --line: #333B35;
+      --gold: #D9AC57;
+      --gold-soft: #3A3320;
+      --pine: #7FBFA6;
+      --pine-soft: #223730;
+      --good: #7FBF97;
+      --warn: #D9A24E;
+      --crit: #E08B76;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #FBF8F1; --paper-2: #F4EEE1; --card: #FFFFFF;
+    --ink: #26312B; --ink-soft: #4B5851; --muted: #857F72; --line: #E4DCCB;
+    --gold: #B07D22; --gold-soft: #F0E4C6; --pine: #2F5D4E; --pine-soft: #DCE8E1;
+    --good: #3C7A56; --warn: #B26A15; --crit: #A6432F;
+    --shadow: 0 1px 2px rgba(38,49,43,.05), 0 6px 20px rgba(38,49,43,.06);
+  }
+  :root[data-theme="dark"] {
+    --paper: #191E1B; --paper-2: #212824; --card: #232A26;
+    --ink: #ECE7DA; --ink-soft: #C3C0B4; --muted: #948E80; --line: #333B35;
+    --gold: #D9AC57; --gold-soft: #3A3320; --pine: #7FBFA6; --pine-soft: #223730;
+    --good: #7FBF97; --warn: #D9A24E; --crit: #E08B76;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .page {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(20px, 5vw, 64px) 20px 96px;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .eyebrow::before { content: "🐾"; font-size: 15px; }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(30px, 6vw, 46px);
+    line-height: 1.08;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  h1 .accent { color: var(--pine); font-style: italic; }
+  .standfirst {
+    font-size: clamp(17px, 2.4vw, 19px);
+    color: var(--ink-soft);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .rule { height: 1px; background: var(--line); border: 0; margin: 40px 0; }
+  .rule.short { width: 64px; height: 3px; background: var(--gold); border-radius: 2px; margin: 0 0 30px; }
+
+  section { margin-top: 56px; }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(23px, 4vw, 30px);
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    margin: 0 0 14px;
+  }
+  h3 {
+    font-family: var(--sans);
+    font-weight: 650;
+    font-size: 17px;
+    margin: 0 0 6px;
+  }
+  p { margin: 0 0 16px; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 650; color: var(--ink); }
+  em { color: var(--pine); font-style: italic; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 620px) { .split { grid-template-columns: 1fr; } }
+  .tool {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .tool .tag {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .tool.look .tag { background: var(--pine-soft); color: var(--pine); }
+  .tool.auto .tag { background: var(--gold-soft); color: var(--gold); }
+  .tool h3 { font-size: 19px; font-family: var(--serif); font-weight: 600; }
+  .tool p { font-size: 14.5px; color: var(--ink-soft); }
+  .tool .use { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 13.5px; }
+  .tool .use b { color: var(--ink); }
+
+  .flow { display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap; margin: 6px 0 4px; }
+  .flow .node {
+    flex: 1 1 200px;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px; box-shadow: var(--shadow);
+  }
+  .flow .node .lab {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .flow .node.then .lab { color: var(--pine); }
+  .flow .node b { font-family: var(--serif); font-size: 18px; font-weight: 600; display: block; margin-bottom: 4px; }
+  .flow .node span { font-size: 13.5px; color: var(--ink-soft); }
+  .flow .arrow { display: flex; align-items: center; color: var(--muted); font-size: 22px; }
+  @media (max-width: 560px) { .flow .arrow { transform: rotate(90deg); justify-content: center; } }
+
+  .recipe {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  .recipe > .head { margin-bottom: 18px; }
+  .recipe .num {
+    font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em;
+    font-variant-numeric: tabular-nums; margin-bottom: 8px;
+  }
+  .recipe h3 { font-family: var(--serif); font-size: 20px; font-weight: 600; }
+  .wt { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+  .wt .chip {
+    font-size: 13px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--paper-2);
+  }
+  .wt .chip b { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; margin-right: 8px; }
+  .wt .chip.when b { color: var(--gold); }
+  .wt .chip.then b { color: var(--pine); }
+  .badge {
+    display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-left: 6px; vertical-align: 2px;
+  }
+  .badge.look { background: var(--pine-soft); color: var(--pine); }
+  .badge.auto { background: var(--gold-soft); color: var(--gold); }
+
+  ol.steps { margin: 4px 0 0; padding: 0; list-style: none; counter-reset: s; }
+  ol.steps > li {
+    counter-increment: s; position: relative; padding: 4px 0 14px 40px; font-size: 14.5px; color: var(--ink-soft);
+  }
+  ol.steps > li::before {
+    content: counter(s); position: absolute; left: 0; top: 2px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--pine); color: #fff; font-family: var(--mono); font-size: 13px;
+    display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums;
+  }
+  ol.steps > li:last-child { padding-bottom: 0; }
+  ol.steps > li::after {
+    content: ""; position: absolute; left: 12.5px; top: 30px; bottom: 6px; width: 1.5px; background: var(--line);
+  }
+  ol.steps > li:last-child::after { display: none; }
+  .fld {
+    font-family: var(--mono); font-size: 12.5px;
+    background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px;
+    padding: 1px 6px; color: var(--ink); white-space: nowrap;
+  }
+
+  .callout {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--pine-soft); border: 1px solid color-mix(in srgb, var(--pine) 25%, transparent);
+    border-radius: var(--radius); padding: 18px 20px; margin: 22px 0;
+  }
+  .callout .ic { font-size: 20px; line-height: 1.3; }
+  .callout p { font-size: 14.5px; color: var(--ink); margin: 0; }
+  .callout.warn { background: color-mix(in srgb, var(--warn) 14%, var(--paper)); border-color: color-mix(in srgb, var(--warn) 35%, transparent); }
+
+  .sheet { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--card); box-shadow: var(--shadow); }
+  .sheet .row { display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; border-top: 1px solid var(--line); }
+  .sheet .row:first-child { border-top: 0; }
+  .sheet .row > div { padding: 14px 18px; font-size: 14px; }
+  .sheet .row > div:first-child { color: var(--ink); font-weight: 600; border-right: 1px solid var(--line); }
+  .sheet .row > div:last-child { color: var(--ink-soft); }
+  .sheet .row.h > div { background: var(--paper-2); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  @media (max-width: 560px) { .sheet .row { grid-template-columns: 1fr; } .sheet .row > div:first-child { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+  .foot { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .foot b { color: var(--ink-soft); }
+</style>
+
+<div class="page">
+  <div class="wrap">
+
+    <p class="eyebrow">Windy Knoll Goldens · Airtable playbook</p>
+    <h1>Making things <span class="accent">fill themselves in</span></h1>
+    <p class="standfirst">Your base is already built so that the <strong>Reservation</strong> is the center of every puppy deal. This guide teaches you the two tools that make everything else — the puppy, the pickup, the training — appear automatically around it, without retyping anything.</p>
+
+    <hr class="rule" />
+
+    <section>
+      <p class="kicker">Start here</p>
+      <h2>Two tools, and they do different jobs</h2>
+      <p>Almost everyone reaches for an "automation" when half the time they actually want a <em>lookup</em>. Getting this distinction right saves you the most work, so it comes first.</p>
+
+      <div class="split">
+        <div class="tool look">
+          <span class="tag">Lookup field</span>
+          <h3>Show something already linked</h3>
+          <p>A lookup reaches across a link you already have and <strong>displays</strong> a value from the other table. It updates on its own, instantly, forever. No setup to maintain.</p>
+          <p class="use"><b>Use it for:</b> the reserved puppy's name showing on the Pickup, the client's town showing on the Calendar, the litter's go-home date showing on the Reservation.</p>
+        </div>
+        <div class="tool auto">
+          <span class="tag">Automation</span>
+          <h3>Do something when a thing happens</h3>
+          <p>An automation <strong>watches</strong> for a moment — a record created, a box checked — and then <strong>acts</strong>: create a record, fill a field, make a calendar event, send an email.</p>
+          <p class="use"><b>Use it for:</b> creating a Training Assignment the instant a reservation asks for training, or marking a puppy "Reserved" the moment it's attached to a deal.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="ic">💡</span>
+        <p><strong>The quick test:</strong> if you just want to <em>see</em> information that lives on a linked record, that's a <strong>lookup</strong> — no automation needed. If you want the system to <em>create or change</em> a record for you, that's an <strong>automation</strong>.</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="kicker">The shape of every automation</p>
+      <h2>When this happens → do that</h2>
+      <p>Every automation in Airtable, no matter how fancy, is just a <strong>trigger</strong> followed by one or more <strong>actions</strong>. Once you see this shape, they all read the same.</p>
+
+      <div class="flow">
+        <div class="node">
+          <div class="lab">When — the trigger</div>
+          <b>Something happens</b>
+          <span>A record is created, a field changes, a checkbox is ticked, or a scheduled time arrives.</span>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node then">
+          <div class="lab">Then — the action</div>
+          <b>Airtable does a thing</b>
+          <span>Update a record, create a record, find records, or send it to Google Calendar.</span>
+        </div>
+      </div>
+
+      <p style="margin-top:20px">You'll find all of this under the <span class="fld">Automations</span> button in the top bar of your base. Each automation has an on/off switch, and — importantly — a <strong>Test</strong> button you run before you ever turn it on.</p>
+    </section>
+
+    <section>
+      <p class="kicker">Recipes for your base</p>
+      <h2>Four things worth setting up</h2>
+      <p>These are built from the tables you already have. Two are lookups (a few clicks, no risk), two are true automations. Do them in this order — each one teaches the click-path for the next.</p>
+
+      <!-- Recipe 1 -->
+      <div class="recipe">
+        <div class="head">
+          <div class="num">RECIPE 01</div>
+          <h3>Show the reserved puppy everywhere <span class="badge look">Lookup</span></h3>
+        </div>
+        <p style="font-size:14.5px;color:var(--ink-soft)">The Reservation already links to a <span class="fld">Puppy</span>. To make that puppy appear on the Pickup &amp; Delivery record (and anywhere else), add a lookup that borrows it through the link — no automation involved.</p>
+        <ol class="steps">
+          <li>Open the <span class="fld">Pickup and Deliveries</span> table and click the <strong>+</strong> to add a field.</li>
+          <li>Choose field type <strong>Lookup</strong>.</li>
+          <li>For "which link," pick the existing <span class="fld">Reservation</span> link on that table.</li>
+          <li>For "which field to pull," choose <span class="fld">Puppy</span>. Name the field <em>Reserved Puppy</em> and save.</li>
+          <li>Repeat the same steps on any table where you want the puppy visible — the Litter, the Calendar view, the Training Assignment.</li>
+        </ol>
+        <div class="callout">
+          <span class="ic">🔗</span>
+          <p>This is also the real answer to <em>"the puppy isn't linked to the reservation."</em> The link <strong>is</strong> there — I checked your live records. What's missing is it being <em>shown</em> on the other screens. Lookups fix that without changing a single relationship.</p>
+        </div>
+      </div>
+
+      <!-- Recipe 2 -->
+      <div class="recipe">
+        <div class="head">
+          <div class="num">RECIPE 02</div>
+          <h3>Put pickups on the calendar from the Litter page <span class="badge look">Lookup</span> <span class="badge auto">+ Automation</span></h3>
+        </div>
+        <p style="font-size:14.5px;color:var(--ink-soft)">Your Pickup table already has a <span class="fld">Calendar Title</span> formula, a <span class="fld">Calendar Start (text)</span>, and a <span class="fld">Send to Calendar</span> checkbox — the plumbing for calendar sync is in place. Here's the piece that pushes it out.</p>
+        <ol class="steps">
+          <li>In <span class="fld">Automations</span>, click <strong>Create automation</strong> and name it "Pickup → Google Calendar."</li>
+          <li>Trigger: <strong>When a record matches conditions</strong> → table <span class="fld">Pickup and Deliveries</span>, condition <span class="fld">Send to Calendar</span> is checked.</li>
+          <li>Action: <strong>Google Calendar → Create event</strong> (connect your calendar once when asked).</li>
+          <li>Map the event <strong>Title</strong> to <span class="fld">Calendar Title</span>, and both <strong>Start</strong> and <strong>End</strong> to <span class="fld">Calendar Start (text)</span> — the field notes even tell you to use these.</li>
+          <li>Run <strong>Test</strong>, confirm the event previews correctly, then flip the automation <strong>On</strong>.</li>
+        </ol>
+        <p style="font-size:14.5px;color:var(--ink-soft);margin-top:4px">To <em>schedule from the Litter page</em>: the Litter already links to its Pickups, so add each pickup there; the checkbox is what actually sends it. Add a <strong>Reserved Puppy</strong> lookup (Recipe 01) on the Pickup so the calendar event shows which puppy it's for.</p>
+      </div>
+
+      <!-- Recipe 3 -->
+      <div class="recipe">
+        <div class="head">
+          <div class="num">RECIPE 03</div>
+          <h3>Mark a puppy "Reserved" the moment it's attached <span class="badge auto">Automation</span></h3>
+        </div>
+        <p style="font-size:14.5px;color:var(--ink-soft)">So a puppy's own status keeps itself honest without you remembering to change it.</p>
+        <ol class="steps">
+          <li>New automation: "Puppy attached → mark Reserved."</li>
+          <li>Trigger: <strong>When a record is updated</strong> → table <span class="fld">Reservation</span>, watched field <span class="fld">Puppy</span>.</li>
+          <li>Add a condition so it only runs when <span class="fld">Puppy</span> is not empty (skips blank waiting-list rows).</li>
+          <li>Action: <strong>Update record</strong>. For the record to update, choose the <span class="fld">Puppy</span> from the trigger step.</li>
+          <li>Set that puppy's <span class="fld">Status</span> to <em>Reserved</em>. Test with one real reservation, then turn it On.</li>
+        </ol>
+      </div>
+
+      <!-- Recipe 4 -->
+      <div class="recipe">
+        <div class="head">
+          <div class="num">RECIPE 04</div>
+          <h3>Auto-create a Training Assignment from the Reservation <span class="badge auto">Automation</span></h3>
+        </div>
+        <p style="font-size:14.5px;color:var(--ink-soft)">When a reservation asks for training, spin up the Training Assignment already linked back — no re-entry.</p>
+        <ol class="steps">
+          <li>New automation: "Reservation wants training → make assignment."</li>
+          <li>Trigger: <strong>When a record matches conditions</strong> → table <span class="fld">Reservation</span>, condition <span class="fld">Training Type</span> is not empty.</li>
+          <li>Action: <strong>Create record</strong> → in the <span class="fld">Training Assignments</span> table.</li>
+          <li>Set its <span class="fld">Reservation</span> link to the record from the trigger step. Because Puppy and Trainer flow through that link, they fill in on their own.</li>
+          <li>Test, then On. Now every training reservation lands as a real assignment automatically.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <p class="kicker">Before you trust it</p>
+      <h2>Testing without touching real data</h2>
+      <div class="callout warn">
+        <span class="ic">🧪</span>
+        <p><strong>Golden rule:</strong> an automation stays <strong>Off</strong> until you've run <strong>Test</strong> and read what it says it will do. Airtable shows you the exact record it's about to change <em>before</em> anything happens. Test first, every time.</p>
+      </div>
+      <p>Three things that keep you safe:</p>
+      <ol class="steps">
+        <li><strong>Automations don't run backwards.</strong> Turning one on only affects records changed <em>from that point forward</em> — it won't sweep through your whole history.</li>
+        <li><strong>The run log is your receipt.</strong> Each automation keeps a history of every time it fired and what it touched. If something looks off, open it and read the last run.</li>
+        <li><strong>Duplicate the base before big changes.</strong> For anything you're nervous about, right-click the base → <strong>Duplicate</strong>, and practice there first. Your real data stays untouched.</li>
+      </ol>
+    </section>
+
+    <section>
+      <p class="kicker">Keep this handy</p>
+      <h2>Lookup or automation?</h2>
+      <div class="sheet">
+        <div class="row h"><div>You want to…</div><div>Reach for</div></div>
+        <div class="row"><div>See a linked record's info on another table</div><div>Lookup field</div></div>
+        <div class="row"><div>Add up or count linked records (litter size, total paid)</div><div>Rollup field</div></div>
+        <div class="row"><div>Create a record automatically</div><div>Automation → Create record</div></div>
+        <div class="row"><div>Fill or change a field when something happens</div><div>Automation → Update record</div></div>
+        <div class="row"><div>Put an event on Google Calendar / Skylight</div><div>Automation → Create event</div></div>
+        <div class="row"><div>Email a client on a status change</div><div>Automation → Send email</div></div>
+      </div>
+    </section>
+
+    <p class="foot">Built for the <b>Windy Knoll Goldens Master</b> base. Everything above uses tables and fields you already have — the Reservation stays the hub, and these lookups and automations are what make the rest gather around it. <b>Nothing here changes your data until you build and switch it on yourself.</b></p>
+
+  </div>
+</div>
+
+</body>
+</html>
