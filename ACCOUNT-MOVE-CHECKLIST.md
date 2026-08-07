@@ -60,19 +60,18 @@ Go to Settings → Connectors on the new account and reconnect:
 ## 4. Published artifact pages
 
 These five pages are owned by the old account; their claude.ai links will stop
-working once it's closed. Backup copies were made — three are in this repo under
-[`artifact-backups/`](artifact-backups/), and the two oversized ones were sent as
-downloads in the chat where this checklist was created. On the new account, ask
-Claude to republish any of them from these files (or just open the HTML files
-directly in a browser; they're self-contained).
+working once it's closed. Full backup copies of all five are in this repo under
+[`artifact-backups/`](artifact-backups/). On the new account, ask Claude to
+republish any of them from these files (or just open the HTML files directly
+in a browser; they're self-contained).
 
 | Page | Backup file |
 |---|---|
 | The Ginosko Experience (discipleship weekend info page) | `artifact-backups/the-ginosko-experience.html` |
 | Maine Equine Calendar for Shooters, Jul 27–Aug 9 | `artifact-backups/maine-equine-calendar-jul27-aug9.html` |
 | Airtable Automations — Windy Knoll Goldens playbook | `artifact-backups/airtable-automations-windy-knoll-goldens.html` |
-| style_g_artifact (design draft) | sent as a download in the chat (~780 KB, too large to push here) |
-| style_f_artifact (design draft) | sent as a download in the chat (~875 KB, too large to push here) |
+| style_g_artifact (design draft) | `artifact-backups/style_g_artifact.html` |
+| style_f_artifact (design draft) | `artifact-backups/style_f_artifact.html` |
 
 **If you shared any of these links with other people** (e.g. the Ginosko page),
 republish from the new account and send out the new link before closing the old one.
