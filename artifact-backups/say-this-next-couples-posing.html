@@ -1,0 +1,989 @@
+<title>Say This Next</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Azeret+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap">
+
+<style>
+:root{
+  --ground:#EDEBE4;
+  --card:#FCFBF8;
+  --card-2:#F4F2EC;
+  --ink:#1A1917;
+  --ink-2:#5F5E56;
+  --ink-3:#8A887E;
+  --line:#D9D6CB;
+  --line-2:#C7C3B5;
+  --amber:#9C6406;
+  --amber-ink:#7A4E04;
+  --amber-wash:#F2E7D2;
+  --dusk:#2E4A63;
+  --dusk-wash:#E1E7EC;
+  --shadow:0 1px 2px rgba(26,25,23,.06), 0 8px 24px -16px rgba(26,25,23,.35);
+  --r:14px;
+  --f-xs:.72rem; --f-sm:.82rem; --f-md:.94rem; --f-lg:1.06rem;
+  --maxw:44rem;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#141311;
+    --card:#1E1D1A;
+    --card-2:#26241F;
+    --ink:#EFEDE4;
+    --ink-2:#A6A296;
+    --ink-3:#7E7A6E;
+    --line:#302D27;
+    --line-2:#3E3A32;
+    --amber:#E9A93C;
+    --amber-ink:#F3C87A;
+    --amber-wash:#2C2418;
+    --dusk:#8FB0CB;
+    --dusk-wash:#1C242B;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141311;
+  --card:#1E1D1A;
+  --card-2:#26241F;
+  --ink:#EFEDE4;
+  --ink-2:#A6A296;
+  --ink-3:#7E7A6E;
+  --line:#302D27;
+  --line-2:#3E3A32;
+  --amber:#E9A93C;
+  --amber-ink:#F3C87A;
+  --amber-wash:#2C2418;
+  --dusk:#8FB0CB;
+  --dusk-wash:#1C242B;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:5.5rem;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1rem}
+
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px}
+
+/* ---------- masthead ---------- */
+.masthead{padding:1.75rem 0 1rem;display:flex;flex-direction:column;gap:.4rem}
+.eyebrow{
+  font-family:"Azeret Mono",ui-monospace,monospace;
+  font-size:var(--f-xs);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0;
+}
+.masthead h1{
+  font-family:"Newsreader",Georgia,serif;
+  font-weight:600;font-size:clamp(2rem,9vw,2.9rem);line-height:1.02;
+  margin:0;letter-spacing:-.015em;text-wrap:balance;
+}
+.masthead p.sub{
+  margin:.25rem 0 0;color:var(--ink-2);font-size:var(--f-md);max-width:34rem;
+}
+
+/* ---------- the deck ---------- */
+.deck{
+  position:relative;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  padding:1.5rem 1.15rem 1.15rem;
+  display:flex;flex-direction:column;gap:.9rem;
+  overflow:hidden;
+}
+/* film rebate: perforation strip along the top edge */
+.deck::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:9px;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--line-2) 0 7px, transparent 7px 15px);
+  opacity:.55;
+}
+.deck-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.code{
+  font-family:"Azeret Mono",ui-monospace,monospace;
+  font-size:var(--f-xs);letter-spacing:.11em;text-transform:uppercase;
+  color:var(--amber-ink);
+}
+.say{
+  font-family:"Newsreader",Georgia,serif;
+  font-size:clamp(1.45rem,6.2vw,2.1rem);
+  line-height:1.24;font-weight:500;margin:0;text-wrap:pretty;
+  letter-spacing:-.008em;
+}
+.meta{margin:0;display:flex;flex-direction:column;gap:.55rem}
+.meta > div{display:grid;grid-template-columns:5.2rem 1fr;gap:.7rem;align-items:baseline}
+.meta dt{
+  font-family:"Azeret Mono",ui-monospace,monospace;
+  font-size:var(--f-xs);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-3);
+}
+.meta dd{margin:0;font-size:var(--f-md);color:var(--ink-2);line-height:1.45}
+.deck-actions{display:flex;gap:.6rem;align-items:stretch;margin-top:.2rem}
+
+.btn{
+  border:1px solid var(--line-2);background:var(--card-2);color:var(--ink);
+  border-radius:10px;padding:.7rem 1rem;font-size:var(--f-md);font-weight:500;
+  cursor:pointer;transition:background .15s ease,border-color .15s ease,transform .06s ease;
+}
+.btn:hover{border-color:var(--ink-3)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{
+  flex:1;background:var(--ink);color:var(--ground);border-color:var(--ink);
+  font-weight:600;letter-spacing:.005em;
+}
+.btn-primary:hover{background:var(--amber-ink);border-color:var(--amber-ink);color:#fff}
+:root[data-theme="dark"] .btn-primary:hover{color:#14130F}
+.star{
+  border:1px solid var(--line-2);background:transparent;border-radius:10px;
+  padding:.45rem .6rem;cursor:pointer;font-size:var(--f-sm);color:var(--ink-2);
+  display:inline-flex;align-items:center;gap:.3rem;line-height:1;
+  transition:color .15s ease,border-color .15s ease,background .15s ease;
+}
+.star:hover{color:var(--ink);border-color:var(--ink-3)}
+.star[aria-pressed="true"]{color:var(--amber-ink);border-color:var(--amber);background:var(--amber-wash)}
+
+/* ---------- panels + tabs ---------- */
+.panel{display:flex;flex-direction:column;gap:.9rem;padding-top:1.5rem}
+.panel[hidden]{display:none}
+.panel-head{display:flex;flex-direction:column;gap:.15rem}
+.panel-head h2{
+  font-family:"Newsreader",Georgia,serif;font-weight:600;
+  font-size:1.5rem;margin:0;letter-spacing:-.01em;
+}
+.panel-head p{margin:0;color:var(--ink-2);font-size:var(--f-md)}
+
+.tabbar{
+  position:sticky;bottom:0;z-index:20;
+  margin-top:1.5rem;
+  background:color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--line);
+}
+.tabbar-inner{
+  max-width:var(--maxw);margin:0 auto;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:.15rem;padding:.4rem .5rem calc(.4rem + env(safe-area-inset-bottom));
+}
+.tab{
+  background:none;border:0;border-radius:9px;cursor:pointer;
+  padding:.5rem .2rem;display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  color:var(--ink-3);font-size:var(--f-xs);font-weight:500;letter-spacing:.01em;
+  transition:color .15s ease,background .15s ease;
+}
+.tab .glyph{font-size:1.05rem;line-height:1}
+.tab:hover{color:var(--ink-2)}
+.tab[aria-selected="true"]{color:var(--ink);background:var(--card)}
+.tab .count{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:.62rem;
+  font-variant-numeric:tabular-nums;color:var(--amber-ink);
+}
+
+/* ---------- filters + search ---------- */
+.controls{display:flex;flex-direction:column;gap:.7rem}
+.search{
+  width:100%;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:.65rem .8rem;font-size:var(--f-md);
+}
+.search::placeholder{color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.chip{
+  border:1px solid var(--line-2);background:var(--card);color:var(--ink-2);
+  border-radius:999px;padding:.32rem .68rem;font-size:var(--f-sm);cursor:pointer;
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+}
+.chip:hover{color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground);font-weight:500}
+.filter-note{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
+  color:var(--ink-3);letter-spacing:.03em;
+}
+
+/* ---------- prompt list ---------- */
+.list{display:flex;flex-direction:column;gap:.6rem}
+.item{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:.95rem 1rem;display:flex;flex-direction:column;gap:.5rem;
+}
+.item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.item .line{
+  font-family:"Newsreader",Georgia,serif;font-size:1.16rem;line-height:1.32;
+  font-weight:500;margin:0;flex:1;
+}
+.item .notes{display:flex;flex-direction:column;gap:.3rem}
+.item .note{
+  font-size:var(--f-sm);color:var(--ink-2);line-height:1.45;
+  display:grid;grid-template-columns:4.6rem 1fr;gap:.6rem;
+}
+.item .note b{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-weight:400;
+  font-size:var(--f-xs);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);
+}
+.empty{
+  border:1px dashed var(--line-2);border-radius:var(--r);padding:1.6rem 1rem;
+  text-align:center;color:var(--ink-2);font-size:var(--f-md);
+}
+
+/* ---------- flows ---------- */
+.flow{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:1rem;display:flex;flex-direction:column;gap:.75rem;
+}
+.flow h3{
+  font-family:"Newsreader",Georgia,serif;font-size:1.28rem;font-weight:600;
+  margin:0;letter-spacing:-.01em;
+}
+.flow .when{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
+  letter-spacing:.06em;text-transform:uppercase;color:var(--dusk);margin:0;
+}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.65rem;counter-reset:s}
+.steps li{
+  display:grid;grid-template-columns:1.6rem 1fr;gap:.7rem;align-items:baseline;counter-increment:s;
+}
+.steps li::before{
+  content:counter(s,decimal-leading-zero);
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
+  color:var(--amber-ink);font-variant-numeric:tabular-nums;
+}
+.steps .sline{font-family:"Newsreader",Georgia,serif;font-size:1.06rem;line-height:1.35;margin:0}
+.steps .snote{margin:.15rem 0 0;font-size:var(--f-sm);color:var(--ink-2);line-height:1.4}
+
+/* ---------- craft ---------- */
+.craft-group{display:flex;flex-direction:column;gap:.5rem}
+.craft-group > h3{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  margin:.6rem 0 .1rem;padding-bottom:.4rem;border-bottom:1px solid var(--line);
+}
+.tip{display:grid;grid-template-columns:1fr;gap:.2rem;padding:.6rem 0}
+.tip + .tip{border-top:1px solid var(--line)}
+.tip h4{margin:0;font-size:var(--f-lg);font-weight:600;letter-spacing:-.005em}
+.tip p{margin:0;color:var(--ink-2);font-size:var(--f-md);line-height:1.5}
+.tip .quote{
+  font-family:"Newsreader",Georgia,serif;font-style:italic;color:var(--ink);
+  font-size:var(--f-md);
+}
+
+/* ---------- checklist ---------- */
+.progress{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .85rem;
+}
+.progress .n{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;
+  font-size:var(--f-sm);color:var(--ink-2);
+}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden;flex:1;max-width:11rem}
+.bar span{display:block;height:100%;background:var(--amber);width:0%;transition:width .25s ease}
+.check-group{display:flex;flex-direction:column;gap:0}
+.check-group > h3{
+  font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  margin:.9rem 0 .35rem;
+}
+.check{
+  display:flex;align-items:flex-start;gap:.7rem;padding:.6rem .1rem;cursor:pointer;
+  border-bottom:1px solid var(--line);font-size:var(--f-md);line-height:1.4;
+}
+.check input{
+  appearance:none;width:1.15rem;height:1.15rem;flex:none;margin:.12rem 0 0;
+  border:1.5px solid var(--line-2);border-radius:5px;cursor:pointer;
+  display:grid;place-content:center;transition:background .15s ease,border-color .15s ease;
+}
+.check input::after{
+  content:"";width:.6rem;height:.34rem;border-left:2px solid var(--ground);
+  border-bottom:2px solid var(--ground);transform:rotate(-45deg) scale(0);
+  transition:transform .12s ease;margin-top:-.12rem;
+}
+.check input:checked{background:var(--ink);border-color:var(--ink)}
+.check input:checked::after{transform:rotate(-45deg) scale(1)}
+.check input:checked ~ span{color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--line-2)}
+
+.footnote{
+  color:var(--ink-3);font-size:var(--f-sm);line-height:1.5;
+  border-top:1px solid var(--line);padding-top:1rem;margin-top:.5rem;
+}
+.footnote a{color:var(--ink-2)}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;animation:none !important}
+}
+@media (min-width:34rem){
+  .tip{grid-template-columns:11rem 1fr;gap:1rem;align-items:baseline}
+  .tip h4{font-size:var(--f-md)}
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Couples posing · field deck</p>
+    <h1>Say This Next</h1>
+    <p class="sub">You are not out of ideas — you are out of <em>sentences</em>. Tap the card, read the line out loud exactly as written, and keep shooting through whatever happens after.</p>
+  </header>
+
+  <section class="deck" aria-label="Current prompt">
+    <div class="deck-head">
+      <span class="code" id="deckCode">WARM-UP</span>
+      <button class="star" id="deckStar" aria-pressed="false">☆ <span>Save</span></button>
+    </div>
+    <p class="say" id="deckSay">Before we start — hug them like you just got home from a two-week trip.</p>
+    <dl class="meta">
+      <div><dt>Watch for</dt><dd id="deckWatch">Shoot it anyway. The "we're not shooting yet" hug is usually the best frame of the first ten minutes.</dd></div>
+      <div><dt>Then</dt><dd id="deckThen">"Stay right there and sway a little." Keep talking; don't announce that you're photographing.</dd></div>
+    </dl>
+    <div class="deck-actions">
+      <button class="btn btn-primary" id="nextBtn">Next prompt</button>
+      <button class="btn" id="againBtn" title="Show the previous prompt again">Back</button>
+    </div>
+  </section>
+
+  <main>
+    <!-- PROMPTS -->
+    <section class="panel" id="panel-prompts" role="tabpanel" aria-labelledby="tab-prompts">
+      <div class="panel-head">
+        <h2>Prompt library</h2>
+        <p>Every line is meant to be said out loud, word for word. The filter here also sets what the card above draws from.</p>
+      </div>
+      <div class="controls">
+        <input class="search" id="search" type="search" placeholder="Search prompts — “hands”, “laugh”, “walk”…" aria-label="Search prompts">
+        <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+        <p class="filter-note" id="filterNote">64 prompts</p>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <!-- FLOWS -->
+    <section class="panel" id="panel-flows" role="tabpanel" aria-labelledby="tab-flows" hidden>
+      <div class="panel-head">
+        <h2>Flows</h2>
+        <p>Run these in order. Each one is built so the couple never has to stand still deciding what to do — and neither do you.</p>
+      </div>
+      <div class="list" id="flows"></div>
+    </section>
+
+    <!-- CRAFT -->
+    <section class="panel" id="panel-craft" role="tabpanel" aria-labelledby="tab-craft" hidden>
+      <div class="panel-head">
+        <h2>Craft notes</h2>
+        <p>The small corrections that turn a fine frame into a good one — and the ones for when the person freezing is you.</p>
+      </div>
+      <div id="craft"></div>
+    </section>
+
+    <!-- SHOT LIST -->
+    <section class="panel" id="panel-list" role="tabpanel" aria-labelledby="tab-list" hidden>
+      <div class="panel-head">
+        <h2>Shot list</h2>
+        <p>Tick these off as you go. It saves on this phone, so check it once before you pack up.</p>
+      </div>
+      <div class="progress">
+        <span class="n" id="progNum">0 / 0 shot</span>
+        <div class="bar"><span id="progBar"></span></div>
+        <button class="star" id="resetList">Reset</button>
+      </div>
+      <div id="checks"></div>
+    </section>
+
+    <!-- SAVED -->
+    <section class="panel" id="panel-saved" role="tabpanel" aria-labelledby="tab-saved" hidden>
+      <div class="panel-head">
+        <h2>Saved</h2>
+        <p>Your shortlist. Star the lines that work for you and they'll be waiting here on your next shoot.</p>
+      </div>
+      <div class="list" id="saved"></div>
+    </section>
+
+    <p class="footnote">
+      Prompt-and-react posing, hand and body corrections, and the wedding-day sequences here are drawn from working wedding and engagement photographers' published guides — including
+      <a href="https://www.slrlounge.com/couples-posing-guide/">SLR Lounge's couples posing guide</a>,
+      <a href="https://aftershoot.com/blog/photography-prompts/">Aftershoot's prompt collection</a>,
+      <a href="https://www.flytographer.com/blog/how-to-pose-couples/">Flytographer's photographer prompt guide</a>,
+      <a href="https://lmorganphoto.com/prompt-based-posing/">L. Morgan Photography on prompt-based posing</a>, and
+      <a href="https://zoelarkin.com/awkward-people-need-direction/">Zoe Larkin on why nervous people need more direction, not less</a>.
+    </p>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="tabbar-inner" role="tablist">
+    <button class="tab" id="tab-prompts" role="tab" aria-selected="true" aria-controls="panel-prompts" data-panel="prompts"><span class="glyph">◇</span>Prompts</button>
+    <button class="tab" id="tab-flows" role="tab" aria-selected="false" aria-controls="panel-flows" data-panel="flows"><span class="glyph">⇢</span>Flows</button>
+    <button class="tab" id="tab-craft" role="tab" aria-selected="false" aria-controls="panel-craft" data-panel="craft"><span class="glyph">⌾</span>Craft</button>
+    <button class="tab" id="tab-list" role="tab" aria-selected="false" aria-controls="panel-list" data-panel="list"><span class="glyph">☑</span>Shot list</button>
+    <button class="tab" id="tab-saved" role="tab" aria-selected="false" aria-controls="panel-saved" data-panel="saved"><span class="glyph">★</span>Saved<span class="count" id="savedCount"></span></button>
+  </div>
+</nav>
+
+<script>
+"use strict";
+
+/* ---------------- storage helpers (never throw) ---------------- */
+function load(key, fallback){
+  try{ var v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e){ return fallback; }
+}
+function save(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+
+/* ---------------- categories ---------------- */
+var CATS = [
+  {id:"warmup",  label:"Warm-up",     code:"WARM-UP"},
+  {id:"move",    label:"Movement",    code:"MOVEMENT"},
+  {id:"laugh",   label:"Laughter",    code:"LAUGHTER"},
+  {id:"close",   label:"Close & quiet",code:"CLOSE & QUIET"},
+  {id:"stand",   label:"Standing",    code:"STANDING"},
+  {id:"ground",  label:"Sitting",     code:"SITTING"},
+  {id:"hands",   label:"Hands & ring",code:"HANDS & RING"},
+  {id:"light",   label:"Light",       code:"LIGHT"},
+  {id:"day",     label:"Wedding day", code:"WEDDING DAY"},
+  {id:"rescue",  label:"Rescue",      code:"RESCUE"}
+];
+
+/* ---------------- the prompts ---------------- */
+var P = [
+/* ---- warm-up ---- */
+["warmup","Before we start — hug them like you just got home from a two-week trip.","Shoot it anyway. The “we're not shooting yet” hug is usually the best frame of the first ten minutes.","“Stay right there and sway a little.” Keep talking; don't announce that you're photographing."],
+["warmup","Stand a foot apart, hold both hands, and look down at each other's shoes.","Takes the eye-contact pressure off completely. Shoulders drop within about three seconds.","“Now look up at each other slowly.” Fire through the whole way up."],
+["warmup","Tell me how you two met — but tell it to each other, not to me.","Let them talk for a full thirty seconds before you raise the camera. You want the version with interruptions.","Ask the one who isn't talking: “Is that how you remember it?”"],
+["warmup","Whose fault was it that you were running late today?","Almost always gets a point, a laugh and a shove. Stay wide enough to keep the shove in frame.","“Okay, defend yourself.” Turn toward the accused."],
+["warmup","Give me the worst prom photo pose you can think of. Commit to it.","Do not shoot the pose. Shoot the two seconds after it collapses.","“Great. Now shake it off and just hold each other normally.”"],
+["warmup","Shake out your hands, roll your shoulders back, and drop them.","Fixes raised shoulders and clenched fists before they show up in fifty frames.","Start shooting immediately after the drop — that's the most relaxed posture you'll get."],
+["warmup","Walk toward me and don't stop until I say. I'm going to keep backing up.","Movement kills self-consciousness faster than any instruction. Keep your own feet moving backward.","“Keep going — now say something to each other while you walk.”"],
+["warmup","Put your hands on each other's waist and take one breath in and out together.","A physical reset for a couple who arrived stiff. Watch the exhale — that's the frame.","“Foreheads together, same thing, one more breath.”"],
+/* ---- movement ---- */
+["move","Hold hands and walk toward me like you're late for a dinner reservation.","Naming a reason gives the walk a purpose, which changes the stride and the faces.","“Now walk it like you've got nowhere to be.” Same path, opposite energy."],
+["move","Walk away from me down the path, and about ten steps in, look back at me at the same time.","Call “now” yourself so the look-back lands together. Shoot before, during and after the turn.","“Keep walking, don't look back this time.”"],
+["move","Hold hands, walk, and try to bump each other off the path with your hips.","The best prompt for a couple with a height difference — the mismatch becomes the joke instead of a problem.","“Okay, truce.” The laughing recovery hug is the keeper."],
+["move","One of you leads, the other follows. Pull them along behind you.","Look for the trailing arm and the gap between them — that stretch of held hands is the picture.","Swap: “Now the other one drags.”"],
+["move","Spin them out under your arm, then pull them straight back into your chest.","Don't shoot the spin. Shoot the return — the landing against the chest is where the reaction is.","“Again, but slower, and don't let go at the end.”"],
+["move","Slow dance. There's no music, and I'm going to wait until you do it anyway.","The awkward first four seconds are real footage. Let the silence do the work.","“Now spin them once.” Then: “Rest your head on their shoulder.”"],
+["move","Piggyback. Whichever of you is less likely to drop the other.","Shoot wide first — you'll want the whole ridiculous silhouette — then move in for the faces.","“Now walk with them.” The wobble is the shot."],
+["move","Run at me. Not fast — movie fast.","Ask for “movie fast” or you get an actual sprint and a blurry frame at 1/200.","Back up and repeat once. The second take is always looser."],
+["move","Chase them. Ten feet, that's all you get.","Pre-focus where you think it ends. This is the prompt that produces open-mouth, un-posed laughter.","Catch and hug. Shoot the catch, not the chase."],
+["move","Walk a slow circle around each other without letting go of hands.","Gives you three or four different light directions on the same two faces without moving them anywhere.","“Stop.” Wherever they land, shoot two or three frames before you speak again."],
+["move","Take them by the hand and lead them into the frame like you're showing them something.","Great for environmental wide shots — it gives both bodies direction and keeps them from squaring up to you.","“Stop and look at it together.”"],
+/* ---- laughter ---- */
+["laugh","Whisper your drive-thru order into their ear in the sexiest voice you own.","The single most reliable laughter prompt in wedding photography. Stay on the listener's face, not the whisperer's.","Swap who whispers. Shoot the second round tighter."],
+["laugh","Tell them the most annoying thing they did this week. Kindly.","The “kindly” keeps it warm. Watch for the mock-offended reaction — that's the frame.","“Now defend yourself.”"],
+["laugh","Count backwards from ten, out loud, together, in sync.","They will fall out of sync by about seven. That's the entire point.","“Try again.” It never works the second time either."],
+["laugh","Squeeze them as tight as you can. Tighter. Now pick them up.","“Tighter” escalates it into real physical comedy. Keep enough room in frame for the lift.","“Don't put them down yet.”"],
+["laugh","Try to say “I love you” without moving your lips.","Small, silly, and it forces eye contact while they concentrate. The failure is the picture.","“Now say it normally.” The contrast in their faces is worth the frame."],
+["laugh","Whoever laughs first buys dinner tonight. Starting now.","A staring contest with stakes. Both faces are pointed at each other and neither is thinking about you.","Whoever breaks — go straight to “Told you.”"],
+["laugh","Nose to nose. Stare at each other. Absolutely no smiling.","Forbidding the smile produces the smile. Reliable on even the most self-conscious couple.","“I said no smiling.” It gets worse, which is better."],
+["laugh","Thumb war. Winner picks where you eat tonight.","Shoot the hands tight and the faces wide — you get two usable frames from one prompt.","“Best of three.”"],
+["laugh","Say the last thing you argued about, but in a terrible British accent.","Defuses a couple who arrived tense with each other. Use your judgement on whether they're up for it.","“Now the other one responds. Same accent.”"],
+["laugh","Dip them. I'm not going to tell you how — figure it out.","Withholding the instruction is deliberate: the negotiation is funnier than a clean dip.","“Okay, now kiss at the bottom of it.”"],
+/* ---- close & quiet ---- */
+["close","Foreheads together, eyes closed. Breathe in, and out.","Your fallback when a prompt lands badly and you need to reset the mood in one move.","“Stay there. Now smile without opening your eyes.”"],
+["close","Put your hand flat on their chest, over their heart, and leave it there.","Gives the hand a job and creates a point of contact that reads as intimacy rather than posing.","“Now look up at them.”"],
+["close","Kiss their shoulder. Don't rush it.","“Don't rush it” is doing the work — it buys you three or four frames instead of one.","“Stay down there and close your eyes.”"],
+["close","Hold their face like it's the last time you'll see it.","Watch the fingers — cupped and soft, never flat palms pressing on the cheek.","“Now bring your forehead to theirs.”"],
+["close","Nose to nose — almost kiss, and hold it right there.","The almost-kiss photographs better than the kiss. Ask them to hold it far longer than feels natural.","“Now actually kiss.” Then: “Don't pull away.”"],
+["close","Rest your chin on top of their head and close your eyes.","Turns a height difference into the composition. Shoot slightly below eye level.","“Wrap your arms around them from there.”"],
+["close","Hand on the back of their neck, thumb along the jaw.","A specific, quiet direction that reads as tenderness. Keep the fingers relaxed, not gripping.","“Pull them in.”"],
+["close","Tell them one thing you've never told anyone else. Quietly.","Go wide and stay far away. Do not stand close enough to hear it.","Wait. Do not fill the silence with another prompt."],
+["close","Kiss — and then don't pull away. Stay close and laugh about it.","The instruction to laugh afterwards is what stops the classic stiff post-kiss reset.","“Again, and this time smile into it.”"],
+["close","Hug them from behind and both look out the same direction, away from me.","Works anywhere with a view. It's the shot you use when a couple can't handle facing the lens.","“Now turn your head and kiss their cheek.”"],
+/* ---- standing ---- */
+["stand","Turn your shoulders toward each other — feet stay pointed at me.","The core couples stance. Angled shoulders slim both bodies and close the gap without a shuffle.","Add: “Chin toward me, then down an inch.”"],
+["stand","Put your weight on your back foot and let the front knee go soft.","Kills the flat, both-feet-planted stance instantly. Say it to each of them separately.","“Now pop the front hip toward me.”"],
+["stand","Push your forehead toward me — just an inch, it'll feel strange.","Chin forward and slightly down. It looks wrong to them and right in every frame.","Confirm out loud: “That's it — that's the one.”"],
+["stand","Both look at me. Don't smile — just breathe out.","“Breathe out” gets a softer, truer face than “relax,” which only makes people tense.","On the exhale: “Now smile at each other, not me.”"],
+["stand","You look at me. You look at them.","The split-attention frame. Usually the strongest single portrait of the session.","Swap who looks where and shoot it again."],
+["stand","Lean your shoulder into the wall, and let them lean into you.","Anchoring one body to something solid gives the other body a reason to be there.","“Now bring your face down toward theirs.”"],
+["stand","Hook a thumb in your pocket — keep the hand soft, not jammed in.","The classic fix for a partner who has no idea what to do with their hands.","Other hand: “Put it on their waist. Fingertips, not the whole palm.”"],
+["stand","Pull your shoulders back and grow an inch taller.","Posture first, expression second. It's much harder to fix a slouch in editing than a smile.","“Now drop your shoulders back down — keep the height.”"],
+["stand","Bend your elbow slightly so there's a gap of light between your arm and your body.","Arms pinned to the ribs widen the silhouette. A small gap fixes it in one instruction.","Check both of them, then shoot."],
+/* ---- sitting ---- */
+["ground","Sit down. Right where you are, on the ground. Yes, in the dress.","Ask with confidence and they'll do it. Seated frames read more relaxed than anything standing.","“Lean into each other.”"],
+["ground","Sit between their legs and lean back into their chest.","Have the back partner sit wide and upright so the front one has something to rest against.","“Tilt your head back onto their shoulder.”"],
+["ground","Both of you sit, knees up, elbows on your knees, and lean in.","A good non-romantic seated shape for a couple who isn't naturally physical in front of a camera.","“Now bump shoulders.”"],
+["ground","Lie back and look straight up at me.","Shoot from directly overhead. Watch your own shadow — it lands right on their faces.","“Turn your heads toward each other.”"],
+["ground","Sit on the edge and let your feet hang.","Tailgate, dock, steps, a low wall — dangling feet make a seated pose look unposed.","“Lean your head on their shoulder.”"],
+["ground","Put your head in their lap and look up at them.","Get low, near ground level. Have the seated partner look down and play with the other's hair.","“Say something to them from down there.”"],
+/* ---- hands & ring ---- */
+["hands","Rest your hand on their chest with the ring facing me. Fingers loose.","Ring hand always on top. Shoot from a slight angle rather than straight down — hands look smaller.","Pull back for the same moment with both faces in frame."],
+["hands","Interlace your fingers, then relax them. Nothing white-knuckled.","Tension in the hands is the most common thing that dates an otherwise good couples frame.","“Now lift them up between you.”"],
+["hands","Trace their ring with your thumb while you talk to them.","Gives you a moving detail shot and a conversation at the same time.","Go tight on hands, then wide for the reason they're smiling."],
+["hands","Lift their hand to your mouth and kiss their knuckles.","Watch the elbow — keep it out from the body so the arm has a line.","“Keep your lips there and look at me.”"],
+["hands","Play with the ends of their hair.","The reliable job for a hand that has nowhere to go, and it always produces a reaction from the other person.","Shoot the reaction, not the hand."],
+["hands","Straighten their tie for me — even though it's already straight.","Fixing something gives both people a task and puts their hands and faces close together.","“Now look up at them.”"],
+["hands","Fingertips on their waist, not the whole palm.","A flat, spread hand reads as a grab in a still frame. Fingertips read as a touch.","Check both hands before you shoot anything else."],
+/* ---- light ---- */
+["light","Stand so the sun is directly behind your heads. I'll handle the rest.","Expose for their skin and let the background blow. Their heads block the sun for a clean edge.","“Now step six inches to your left” to bring the flare in or take it out."],
+["light","Kiss into the light so it comes through the gap between you.","The gap between two faces mid-kiss is where backlight does its best work. Get low.","Hold the exposure and shoot the pull-away too."],
+["light","Face the sun with your eyes closed, and open them on three.","Stops the squinting that ruins front-lit golden hour frames. Count out loud.","Shoot on “three” and for two seconds after."],
+["light","Step into that shade and stop right at the edge of it.","The line where shade meets sun is the most flattering light on any location, at any hour.","“Turn your face toward the bright side.”"],
+["light","Turn slowly together until I say stop.","Rotating the couple is faster than rotating yourself when you're hunting for the light.","Say “stop” the moment the light hits both faces cleanly."],
+["light","Put your nose toward the window and hold still.","Indoors, the nose points at the light source. Everything else about the pose can follow from that.","“Now bring them into the light with you.”"],
+["light","Hold each other and hold still — this one's a long exposure.","Blue hour, after sunset. Give them a reason to stay still and you get a usable frame at 1/15.","Brace yourself on something solid and shoot a burst of five."],
+/* ---- wedding day ---- */
+["day","Walk up behind them, tap their shoulder, then take your time turning around.","First look. “Take your time” is the whole prompt — most people spin around in half a second.","Stay on the waiting partner's face through the turn, then swing wide for both."],
+["day","Read your vows to each other. I'm going to be far away.","Then actually go far away. Long lens, no talking, let it run for several minutes.","Come back in only when they've finished and are holding each other."],
+["day","Walk out slowly. Slower than that. Wave at people.","Ceremony exit. Everyone runs it. Ask twice for slow and you'll get one usable pass.","Have them stop and kiss at the end of the aisle."],
+["day","Take thirty seconds alone right now, just the two of you. I'll come get you.","Immediately post-ceremony. It's a kindness first and it produces the most honest frames of the day.","Shoot it from a distance. Don't direct anything."],
+["day","Look down at the dress, not at me.","Getting-ready coverage. Downward gaze at a detail is calmer than a posed look at the lens.","“Now look up at whoever's helping you.”"],
+["day","Grab your drinks and toast each other — just the two of you.","Reception. Gets the couple together for thirty seconds in a room that's trying to separate them.","“Now clink and drink without breaking eye contact.”"],
+["day","Everybody point your feet toward the couple.","Family formals. Fixes an entire group's body angles with one sentence instead of ten.","Then: “Front row, take a small step in.”"],
+["day","Kiss under the lights and hold it — my flash is slow tonight.","Night exit or dance floor. Naming the technical reason gets you a genuinely held pose.","Drag the shutter and shoot several. Keep one with movement in it."],
+/* ---- rescue ---- */
+["rescue","They're frozen: stop posing them and give them a job.","Any verb beats any position. “Walk over there and come back” outperforms “put your hand there” every time.","Fall back to the 90-Second Reset flow and rebuild from the hug."],
+["rescue","One of them is nervous: talk only to the confident one.","The nervous partner relaxes when the attention is somewhere else. Praise them by name once, then move on.","Give the confident one the active instruction and let the other react to it."],
+["rescue","Big height difference: put the shorter one on a step, or widen the taller one's stance.","Widening the taller partner's feet drops them two or three inches without it reading as a crouch.","Or lean into it — chin on head, hug from behind, seated frames."],
+["rescue","“I hate my smile”: have them look down, then up at you on three.","The reset gives you the natural half-second before the practised smile arrives.","Shoot on “three,” not after. And say “that one's beautiful” out loud."],
+["rescue","Soft jawline in frame: “Push your forehead toward me and drop your chin an inch.”","It feels ridiculous to them and fixes the line of the jaw in a single instruction. Never explain why.","Say it as a technical note, in the same tone as any other direction."],
+["rescue","Grabby hands: “Fingertips, not palms.”","Two words. Fixes the most common thing that makes a couples photo look staged.","Repeat it whenever you see a flat palm reappear. It will."],
+["rescue","There's a gap: “Close it up — you're a foot further apart than you think.”","Couples always leave more space than they believe they are. Say the distance out loud.","“Now push into each other so there's actual pressure.”"],
+["rescue","Nothing looks natural: swap the noun for a verb.","“Hold hands” is a noun. “Pull them toward you” is a verb. Only one of them produces a photograph.","Rewrite whatever you were about to say as an action, then say that instead."],
+["rescue","A dog or a kid is in frame: “Ignore them, look at each other, I'll deal with it.”","Removing the responsibility from the couple is what lets the frame work. You handle the animal.","Shoot the chaos too — it's usually the photo the family keeps."],
+["rescue","You're the one frozen: move your feet, not their bodies.","Same pose, three heights — standing, crouched, on the ground — is three different photographs and buys you a full minute to think.","Then change your distance: wide, three-quarter, tight on hands. Now you have six."]
+];
+
+/* build objects */
+var PROMPTS = P.map(function(row, i){
+  return {id:"p"+i, cat:row[0], say:row[1], watch:row[2], then:row[3]};
+});
+var CAT_BY_ID = {};
+CATS.forEach(function(c){ CAT_BY_ID[c.id] = c; });
+
+/* ---------------- flows ---------------- */
+var FLOWS = [
+  {
+    title:"The 90-Second Reset",
+    when:"When you blank, or the energy dies",
+    steps:[
+      ["“Come here — big hug. Squeeze.”","Physical contact first. It ends whatever awkward silence you were both standing in."],
+      ["“Stay in it and sway a bit.”","Now you're shooting. Circle them while they sway; don't stop to review."],
+      ["“Whisper your drive-thru order in the sexiest voice you've got.”","The laugh. Stay on the listener's face."],
+      ["“Foreheads together, eyes closed, one breath.”","Bring it back down. This is your quiet frame."],
+      ["“Now look at me — don't smile.”","They will. That's the last frame of the set, and usually the best one."]
+    ]
+  },
+  {
+    title:"One Spot, Five Frames",
+    when:"Great light, and you don't want to move them",
+    steps:[
+      ["Wide — put them small in the location.","Your feet are the zoom. Back up further than feels right."],
+      ["Three-quarter, from slightly below.","Shoulders angled in, weight on back feet, gap of light under the arms."],
+      ["Tight on both faces, foreheads together.","Get in close enough that it feels rude, then take one more step."],
+      ["Hands only — ring hand on top.","Shoot at a slight angle rather than straight down."],
+      ["A detail that isn't them: the veil, the light, the doorway.","The frame that gives the gallery somewhere to breathe."]
+    ]
+  },
+  {
+    title:"The Walk-In",
+    when:"Opening a session, or the first five minutes anywhere new",
+    steps:[
+      ["“Hold hands and walk toward me — don't stop, I'll keep backing up.”","Keep your own feet moving. Shoot continuously."],
+      ["“Say something to each other while you walk.”","Breaks the marching-toward-the-camera face."],
+      ["“Stop. Turn in and hug.”","The stop is where the movement resolves."],
+      ["“Spin them out and pull them back.”","Shoot the return, not the spin."],
+      ["“Stay there. Foreheads together.”","Land the sequence somewhere quiet so it doesn't end on a laugh you can't repeat."]
+    ]
+  },
+  {
+    title:"Golden Hour Closer",
+    when:"The last twenty minutes of light",
+    steps:[
+      ["Put the sun directly behind their heads and expose for their skin.","Let the background go. Meter off their faces, not the sky."],
+      ["“Walk toward me, slow, hand in hand.”","Backlit walking frames. Watch for haze — shade your lens with your hand."],
+      ["“Kiss, and hold it.”","The light comes through the gap between them. Get low."],
+      ["“Stay exactly there.” Drop exposure and shoot the silhouette.","Two very different photographs from one pose."],
+      ["“Sit down right there and watch it go.”","The sun sets, you keep shooting, and nobody is posing anymore."]
+    ]
+  },
+  {
+    title:"The First Look",
+    when:"Wedding day, before the ceremony",
+    steps:[
+      ["Place the waiting partner, back turned, with good light on their face.","Scout this before either of them arrives. You get one take."],
+      ["“Walk up, tap their shoulder, then give them time to turn.”","Say “take your time” twice. They still won't."],
+      ["Stay on the waiting face through the whole turn.","This is the frame. Do not swing wide too early."],
+      ["Step back for both of them, then let it run.","No prompts at all for the next minute. They know what to do."],
+      ["“Walk off together — I'll follow.”","Ends the moment gracefully instead of you calling it."]
+    ]
+  },
+  {
+    title:"Cold Feet Warm-Up",
+    when:"A couple who told you they hate having their photo taken",
+    steps:[
+      ["Say it out loud: “Nobody looks normal in the first ten minutes. That's expected.”","Naming it removes the pressure to already be good at this."],
+      ["“Stand a foot apart, hold both hands, look at each other's shoes.”","No eye contact, no camera awareness, nothing to get wrong."],
+      ["“Now look up at each other.”","Shoot the whole way up."],
+      ["“Walk over to that tree and come back.”","A job, not a pose. Movement, not stillness."],
+      ["“That was the hard part and you already did it.”","Say something true and specific about what worked. Confidence is a lighting condition."]
+    ]
+  }
+];
+
+/* ---------------- craft notes ---------------- */
+var CRAFT = [
+  ["Bodies",[
+    ["Angle, don't square up","Shoulders turned toward each other, feet still pointed at you. Squared-off bodies read as a school photo."],
+    ["Weight on the back foot","Front knee soft, front hip slightly toward the lens. Say it to each of them individually — one will do it and the other won't."],
+    ["Leave a gap of light","A small bend in the elbow puts daylight between arm and ribs. Arms pinned to the sides widen everybody."],
+    ["Close the gap between them","Couples stand about a foot further apart than they think. Ask for actual contact, not proximity."],
+    ["Give one body something to lean on","A wall, a tree, a doorframe. Anchoring one person gives the other a reason to lean in."]
+  ]],
+  ["Hands",[
+    ["Every hand needs a job","Hands with nothing to do hang limp or clench. Pocket, waist, hair, jaw, the other person's hand — assign each one."],
+    ["Fingertips, not palms","A flat spread palm on a waist reads as a grab. Fingertips read as a touch. It's the single highest-value correction you can make."],
+    ["Soften the fingers","Interlaced and white-knuckled photographs as tension. Ask them to relax the grip after they take hold."],
+    ["Ring hand on top, shot at an angle","Never straight down. A slight angle makes hands look smaller and gives the ring somewhere to catch light."]
+  ]],
+  ["Faces",[
+    ["Forehead forward, chin down an inch","It feels absurd and it fixes the jawline. Deliver it as a flat technical note and never explain why."],
+    ["Say “breathe out,” never “relax”","“Relax” is an instruction nobody can follow. An exhale is a physical action, and it produces the face you wanted."],
+    ["Look down, then up on three","The reset for anyone whose smile has gone rehearsed. Shoot on “three,” not after."],
+    ["Chase the second reaction","The laugh is loud; the look they give each other right after the laugh is the photograph."]
+  ]],
+  ["Light",[
+    ["Expose for skin, let the sky go","Backlit at golden hour, meter their faces. A blown background is a style; a dark face is a mistake."],
+    ["Work the edge of the shade","Where shade meets sun is soft, directional and flattering at any time of day. It's the most useful ten feet on any location."],
+    ["Nose toward the light","Indoors, point the nose at the window and let the rest of the pose follow. It's a faster fix than moving your own position."],
+    ["Rotate the couple, not yourself","When you're hunting for light, “turn slowly until I say stop” is quicker than walking a circle around them."]
+  ]],
+  ["You",[
+    ["Move your feet, not their bodies","Same pose from three heights and three distances is six photographs. It also buys you sixty seconds to think of the next prompt."],
+    ["Narrate what's working","“That's it — stay right there” tells them they're doing well and keeps them in the pose. Silence reads as disapproval."],
+    ["Never say “just be natural”","It's the instruction that causes the problem. Nervous people need more direction, not less — that's the whole premise of prompting."],
+    ["Count down before the frame that matters","“On three, kiss.” People perform better against a countdown than against an open-ended request."],
+    ["Keep one prompt in your pocket","Decide before you get out of the car which prompt you'll open with. Freezing usually happens at the start, not the middle."]
+  ]]
+];
+
+/* ---------------- shot list ---------------- */
+var CHECKS = [
+  ["Every couples session",[
+    "Wide environmental frame — them small in the location",
+    "Three-quarter walking shot, hands held",
+    "Tight on both faces, foreheads together",
+    "Hands only, ring hand on top",
+    "A real laugh, mid-motion",
+    "One quiet frame with eyes closed",
+    "Backlit kiss with light through the gap",
+    "Shot from directly above, both lying back",
+    "Silhouette at the end of the light",
+    "One where they've forgotten you're there"
+  ]],
+  ["Wedding day, the two of them",[
+    "First look — the waiting face through the turn",
+    "Private vows, shot long and from a distance",
+    "Thirty seconds alone after the ceremony",
+    "Ceremony exit, slow pass",
+    "Full-length portrait, dress and suit clean",
+    "Golden hour set away from the reception",
+    "A toast, just the two of them",
+    "Night frame with dragged shutter"
+  ]]
+];
+
+/* ---------------- state ---------------- */
+var favs = load("stn_favs", []);
+var done = load("stn_checks", {});
+var activeCat = "all";
+var query = "";
+var deckHistory = [];
+var current = null;
+
+var $ = function(id){ return document.getElementById(id); };
+
+/* ---------------- deck ---------------- */
+function pool(){
+  return PROMPTS.filter(function(p){
+    return activeCat === "all" || p.cat === activeCat;
+  });
+}
+function drawPrompt(){
+  var candidates = pool();
+  if(!candidates.length) candidates = PROMPTS;
+  var pick = candidates[Math.floor(Math.random()*candidates.length)];
+  if(candidates.length > 1 && current && pick.id === current.id){
+    return drawPrompt();
+  }
+  if(current) deckHistory.push(current);
+  setCard(pick);
+}
+function setCard(p){
+  current = p;
+  $("deckCode").textContent = CAT_BY_ID[p.cat].code;
+  $("deckSay").textContent = p.say;
+  $("deckWatch").textContent = p.watch;
+  $("deckThen").textContent = p.then;
+  syncDeckStar();
+}
+function syncDeckStar(){
+  var on = current && favs.indexOf(current.id) !== -1;
+  var btn = $("deckStar");
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  btn.firstChild.nodeValue = on ? "★ " : "☆ ";
+  btn.querySelector("span").textContent = on ? "Saved" : "Save";
+}
+$("nextBtn").addEventListener("click", drawPrompt);
+$("againBtn").addEventListener("click", function(){
+  var prev = deckHistory.pop();
+  if(prev) setCard(prev);
+});
+$("deckStar").addEventListener("click", function(){
+  if(current) toggleFav(current.id);
+});
+
+/* ---------------- favourites ---------------- */
+function toggleFav(id){
+  var i = favs.indexOf(id);
+  if(i === -1) favs.push(id); else favs.splice(i,1);
+  save("stn_favs", favs);
+  syncDeckStar();
+  renderList();
+  renderSaved();
+  renderSavedCount();
+}
+function renderSavedCount(){
+  $("savedCount").textContent = favs.length ? String(favs.length) : "";
+}
+
+/* ---------------- prompt list ---------------- */
+function promptCard(p){
+  var el = document.createElement("article");
+  el.className = "item";
+
+  var top = document.createElement("div");
+  top.className = "item-top";
+
+  var line = document.createElement("p");
+  line.className = "line";
+  line.textContent = p.say;
+
+  var star = document.createElement("button");
+  star.className = "star";
+  star.setAttribute("aria-pressed", favs.indexOf(p.id) !== -1 ? "true" : "false");
+  star.setAttribute("aria-label", "Save this prompt");
+  star.textContent = favs.indexOf(p.id) !== -1 ? "★" : "☆";
+  star.addEventListener("click", function(){ toggleFav(p.id); });
+
+  top.appendChild(line);
+  top.appendChild(star);
+
+  var notes = document.createElement("div");
+  notes.className = "notes";
+  [["Category", CAT_BY_ID[p.cat].label],["Watch for", p.watch],["Then", p.then]]
+    .slice(1)
+    .forEach(function(pair){
+      var n = document.createElement("p");
+      n.className = "note";
+      var b = document.createElement("b");
+      b.textContent = pair[0];
+      var s = document.createElement("span");
+      s.textContent = pair[1];
+      n.appendChild(b); n.appendChild(s);
+      notes.appendChild(n);
+    });
+
+  var code = document.createElement("span");
+  code.className = "code";
+  code.textContent = CAT_BY_ID[p.cat].code;
+
+  el.appendChild(code);
+  el.appendChild(top);
+  el.appendChild(notes);
+  return el;
+}
+function matches(p){
+  if(activeCat !== "all" && p.cat !== activeCat) return false;
+  if(!query) return true;
+  var q = query.toLowerCase();
+  return (p.say + " " + p.watch + " " + p.then + " " + CAT_BY_ID[p.cat].label)
+    .toLowerCase().indexOf(q) !== -1;
+}
+function renderList(){
+  var host = $("list");
+  host.textContent = "";
+  var rows = PROMPTS.filter(matches);
+  $("filterNote").textContent = rows.length + (rows.length === 1 ? " prompt" : " prompts")
+    + (activeCat === "all" ? "" : " · " + CAT_BY_ID[activeCat].label)
+    + " · the card above draws from this";
+  if(!rows.length){
+    var e = document.createElement("p");
+    e.className = "empty";
+    e.textContent = "No prompts match “" + query + "”. Try “laugh”, “hands”, “walk” or “light”.";
+    host.appendChild(e);
+    return;
+  }
+  rows.forEach(function(p){ host.appendChild(promptCard(p)); });
+}
+function renderSaved(){
+  var host = $("saved");
+  host.textContent = "";
+  var rows = PROMPTS.filter(function(p){ return favs.indexOf(p.id) !== -1; });
+  if(!rows.length){
+    var e = document.createElement("p");
+    e.className = "empty";
+    e.textContent = "Nothing saved yet. Tap ☆ on any prompt — the ones that work on your couples end up here.";
+    host.appendChild(e);
+    return;
+  }
+  rows.forEach(function(p){ host.appendChild(promptCard(p)); });
+}
+
+/* ---------------- chips ---------------- */
+(function buildChips(){
+  var host = $("chips");
+  var all = [{id:"all", label:"All"}].concat(CATS);
+  all.forEach(function(c){
+    var b = document.createElement("button");
+    b.className = "chip";
+    b.type = "button";
+    b.textContent = c.label;
+    b.setAttribute("aria-pressed", c.id === "all" ? "true" : "false");
+    b.addEventListener("click", function(){
+      activeCat = c.id;
+      Array.prototype.forEach.call(host.children, function(el){
+        el.setAttribute("aria-pressed", el === b ? "true" : "false");
+      });
+      renderList();
+    });
+    host.appendChild(b);
+  });
+})();
+
+/* ---------------- flows ---------------- */
+(function renderFlows(){
+  var host = $("flows");
+  FLOWS.forEach(function(f){
+    var el = document.createElement("article");
+    el.className = "flow";
+
+    var when = document.createElement("p");
+    when.className = "when";
+    when.textContent = f.when;
+
+    var h = document.createElement("h3");
+    h.textContent = f.title;
+
+    var ol = document.createElement("ol");
+    ol.className = "steps";
+    f.steps.forEach(function(s){
+      var li = document.createElement("li");
+      var d = document.createElement("div");
+      var a = document.createElement("p");
+      a.className = "sline";
+      a.textContent = s[0];
+      var b = document.createElement("p");
+      b.className = "snote";
+      b.textContent = s[1];
+      d.appendChild(a); d.appendChild(b);
+      li.appendChild(d);
+      ol.appendChild(li);
+    });
+
+    el.appendChild(when);
+    el.appendChild(h);
+    el.appendChild(ol);
+    host.appendChild(el);
+  });
+})();
+
+/* ---------------- craft ---------------- */
+(function renderCraft(){
+  var host = $("craft");
+  CRAFT.forEach(function(group){
+    var wrap = document.createElement("section");
+    wrap.className = "craft-group";
+    var h = document.createElement("h3");
+    h.textContent = group[0];
+    wrap.appendChild(h);
+    group[1].forEach(function(t){
+      var tip = document.createElement("div");
+      tip.className = "tip";
+      var h4 = document.createElement("h4");
+      h4.textContent = t[0];
+      var p = document.createElement("p");
+      p.textContent = t[1];
+      tip.appendChild(h4); tip.appendChild(p);
+      wrap.appendChild(tip);
+    });
+    host.appendChild(wrap);
+  });
+})();
+
+/* ---------------- checklist ---------------- */
+var totalChecks = CHECKS.reduce(function(n,g){ return n + g[1].length; }, 0);
+function updateProgress(){
+  var n = 0;
+  Object.keys(done).forEach(function(k){ if(done[k]) n++; });
+  $("progNum").textContent = n + " / " + totalChecks + " shot";
+  $("progBar").style.width = (totalChecks ? (n/totalChecks*100) : 0) + "%";
+}
+(function renderChecks(){
+  var host = $("checks");
+  CHECKS.forEach(function(group, gi){
+    var wrap = document.createElement("section");
+    wrap.className = "check-group";
+    var h = document.createElement("h3");
+    h.textContent = group[0];
+    wrap.appendChild(h);
+    group[1].forEach(function(text, i){
+      var key = "g" + gi + "i" + i;
+      var label = document.createElement("label");
+      label.className = "check";
+      var box = document.createElement("input");
+      box.type = "checkbox";
+      box.checked = !!done[key];
+      var span = document.createElement("span");
+      span.textContent = text;
+      box.addEventListener("change", function(){
+        done[key] = box.checked;
+        save("stn_checks", done);
+        updateProgress();
+      });
+      label.appendChild(box);
+      label.appendChild(span);
+      wrap.appendChild(label);
+    });
+    host.appendChild(wrap);
+  });
+})();
+$("resetList").addEventListener("click", function(){
+  done = {};
+  save("stn_checks", done);
+  Array.prototype.forEach.call(document.querySelectorAll(".check input"), function(b){ b.checked = false; });
+  updateProgress();
+});
+
+/* ---------------- tabs ---------------- */
+Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(tab){
+  tab.addEventListener("click", function(){
+    Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+      t.setAttribute("aria-selected", t === tab ? "true" : "false");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function(p){
+      p.hidden = (p.id !== "panel-" + tab.dataset.panel);
+    });
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+
+/* ---------------- search ---------------- */
+$("search").addEventListener("input", function(e){
+  query = e.target.value.trim();
+  renderList();
+});
+
+/* ---------------- init ---------------- */
+setCard(PROMPTS[0]);
+renderList();
+renderSaved();
+renderSavedCount();
+updateProgress();
+</script>
