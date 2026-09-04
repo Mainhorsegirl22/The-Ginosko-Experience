@@ -18,6 +18,9 @@
   --amber-wash:#F2E7D2;
   --dusk:#2E4A63;
   --dusk-wash:#E1E7EC;
+  --fig-a:#3B3A34;
+  --fig-b:#9C6406;
+  --fig-line:#C2BEB0;
   --shadow:0 1px 2px rgba(26,25,23,.06), 0 8px 24px -16px rgba(26,25,23,.35);
   --r:14px;
   --f-xs:.72rem; --f-sm:.82rem; --f-md:.94rem; --f-lg:1.06rem;
@@ -38,6 +41,9 @@
     --amber-wash:#2C2418;
     --dusk:#8FB0CB;
     --dusk-wash:#1C242B;
+    --fig-a:#CFCBBE;
+    --fig-b:#E9A93C;
+    --fig-line:#4A463D;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
   }
 }
@@ -55,6 +61,9 @@
   --amber-wash:#2C2418;
   --dusk:#8FB0CB;
   --dusk-wash:#1C242B;
+    --fig-a:#CFCBBE;
+    --fig-b:#E9A93C;
+    --fig-line:#4A463D;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
 }
 
@@ -248,10 +257,11 @@ button,select,input{font:inherit;color:inherit}
 }
 .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.65rem;counter-reset:s}
 .steps li{
-  display:grid;grid-template-columns:1.6rem 1fr;gap:.7rem;align-items:baseline;counter-increment:s;
+  display:grid;grid-template-columns:1.6rem 1fr auto;gap:.7rem;align-items:start;counter-increment:s;
 }
 .steps li::before{
   content:counter(s,decimal-leading-zero);
+  padding-top:.2rem;
   font-family:"Azeret Mono",ui-monospace,monospace;font-size:var(--f-xs);
   color:var(--amber-ink);font-variant-numeric:tabular-nums;
 }
@@ -265,7 +275,8 @@ button,select,input{font:inherit;color:inherit}
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
   margin:.6rem 0 .1rem;padding-bottom:.4rem;border-bottom:1px solid var(--line);
 }
-.tip{display:grid;grid-template-columns:1fr;gap:.2rem;padding:.6rem 0}
+.tip{display:flex;gap:.85rem;align-items:flex-start;padding:.7rem 0}
+.tip-body{display:flex;flex-direction:column;gap:.2rem;min-width:0}
 .tip + .tip{border-top:1px solid var(--line)}
 .tip h4{margin:0;font-size:var(--f-lg);font-weight:600;letter-spacing:-.005em}
 .tip p{margin:0;color:var(--ink-2);font-size:var(--f-md);line-height:1.5}
@@ -315,12 +326,45 @@ button,select,input{font:inherit;color:inherit}
 }
 .footnote a{color:var(--ink-2)}
 
+
+/* ---------- pose diagrams ---------- */
+.pose{display:block;width:100%;height:100%}
+.fg{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.fg-a{stroke:var(--fig-a)}
+.fg-b{stroke:var(--fig-b)}
+.fg-head{fill:var(--card-2)}
+.fg-gaze{stroke-width:2.1}
+.pr{fill:none;stroke:var(--fig-line);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pr-ground{stroke-width:1.4}
+.pr-solid{stroke-width:1.8}
+.pr-sun{fill:var(--amber-wash);stroke:var(--fig-b);stroke-width:1.4}
+.pr-sun-ring{stroke:var(--fig-b);stroke-width:1;opacity:.4}
+.pr-shade{fill:var(--fig-line);stroke:none;opacity:.15}
+.pr-dash{stroke-dasharray:3 3}
+.pr-ray{stroke-width:1.2;opacity:.55}
+.pr-arr{stroke:var(--fig-b);stroke-width:1.6}
+.pr-dot{fill:var(--fig-b);stroke:none}
+.pr-focus{stroke:var(--fig-b);stroke-width:1.4;stroke-dasharray:3.5 3;opacity:.85}
+
+.thumb{
+  width:76px;height:58px;flex:none;overflow:hidden;
+  border:1px solid var(--line);border-radius:8px;background:var(--card-2);
+}
+.step-thumb{width:60px;height:46px}
+.tip-thumb{width:68px;height:52px}
+.deck-figure{
+  width:100%;max-width:238px;height:150px;margin:0 auto;overflow:hidden;
+  border:1px solid var(--line);border-radius:10px;background:var(--card-2);
+}
+
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important;animation:none !important}
 }
 @media (min-width:34rem){
-  .tip{grid-template-columns:11rem 1fr;gap:1rem;align-items:baseline}
-  .tip h4{font-size:var(--f-md)}
+  .thumb{width:92px;height:70px}
+  .step-thumb{width:72px;height:55px}
+  .tip-thumb{width:84px;height:64px}
+  .deck-figure{max-width:290px;height:180px}
 }
 </style>
 
@@ -336,6 +380,7 @@ button,select,input{font:inherit;color:inherit}
       <span class="code" id="deckCode">WARM-UP</span>
       <button class="star" id="deckStar" aria-pressed="false">☆ <span>Save</span></button>
     </div>
+    <div class="deck-figure" id="deckFig"></div>
     <p class="say" id="deckSay">Before we start — hug them like you just got home from a two-week trip.</p>
     <dl class="meta">
       <div><dt>Watch for</dt><dd id="deckWatch">Shoot it anyway. The "we're not shooting yet" hug is usually the best frame of the first ten minutes.</dd></div>
@@ -550,9 +595,263 @@ var P = [
 ["rescue","You're the one frozen: move your feet, not their bodies.","Same pose, three heights — standing, crouched, on the ground — is three different photographs and buys you a full minute to think.","Then change your distance: wide, three-quarter, tight on hands. Now you have six."]
 ];
 
+
+/* =================================================================
+   POSE MOCKUPS
+   Two-segment inverse kinematics: a pose says where the hands and
+   feet go, and the arms and legs are solved to reach them. Angles
+   are degrees, 0 = straight down, 90 = right, 180 = up.
+   ================================================================= */
+var FRAME_W = 132, FRAME_H = 100, GROUND = 93;
+var LIM = {spine:26, upper:14, fore:13, thigh:16, shin:16, head:7, shoulder:8, hip:6, neck:9};
+
+function rad(d){ return d * Math.PI / 180; }
+function ptAt(o, len, deg){ return [o[0] + len*Math.sin(rad(deg)), o[1] + len*Math.cos(rad(deg))]; }
+
+/* solve a two-link limb from origin to target; returns the two absolute angles */
+function ik(o, t, l1, l2, bend){
+  var dx = t[0]-o[0], dy = t[1]-o[1];
+  var d = Math.sqrt(dx*dx + dy*dy);
+  var max = l1 + l2 - 0.01, min = Math.abs(l1-l2) + 0.01;
+  if(d > max) d = max;
+  if(d < min) d = min;
+  var base = Math.atan2(dx, dy) * 180 / Math.PI;
+  var c = (d*d + l1*l1 - l2*l2) / (2*d*l1);
+  c = Math.max(-1, Math.min(1, c));
+  var a = Math.acos(c) * 180 / Math.PI;
+  var a1 = base + (bend||1) * a;
+  var e = ptAt(o, l1, a1);
+  var a2 = Math.atan2(t[0]-e[0], t[1]-e[1]) * 180 / Math.PI;
+  return [a1, a2, e];
+}
+
+function seg(a, b, cls){
+  return '<path class="'+cls+'" d="M'+a[0].toFixed(1)+' '+a[1].toFixed(1)+'L'+b[0].toFixed(1)+' '+b[1].toFixed(1)+'"/>';
+}
+
+function drawFigure(f, role){
+  var s = f.s || 1;
+  var L = {};
+  for(var k in LIM) L[k] = LIM[k] * s;
+  var lean = f.lean || 0;
+  var rot = f.rot || 0;
+  var cls = "fg fg-" + role;
+  var out = "";
+
+  var hip = [f.x, (f.y !== undefined ? f.y : GROUND - (L.thigh + L.shin))];
+  var sn = Math.sin(rad(lean)), cs = Math.cos(rad(lean));
+  var neck = [hip[0] + L.spine*sn, hip[1] - L.spine*cs];
+  var head = [hip[0] + (L.spine+L.neck)*sn, hip[1] - (L.spine+L.neck)*cs];
+  var shL = [neck[0] - L.shoulder*cs, neck[1] - L.shoulder*sn];
+  var shR = [neck[0] + L.shoulder*cs, neck[1] + L.shoulder*sn];
+  var hpL = [hip[0] - L.hip*cs, hip[1] - L.hip*sn];
+  var hpR = [hip[0] + L.hip*cs, hip[1] + L.hip*sn];
+
+  /* spine */
+  out += seg(hip, neck, cls);
+  /* shoulders + hips as short bars */
+  out += seg(shL, shR, cls);
+
+  /* arms */
+  var hands = f.hands || [
+    [shL[0] - 3*s, shL[1] + (L.upper+L.fore)*0.94],
+    [shR[0] + 3*s, shR[1] + (L.upper+L.fore)*0.94]
+  ];
+  var abend = f.abend || [-1, 1];
+  [[shL, hands[0], abend[0]], [shR, hands[1], abend[1]]].forEach(function(arm){
+    var r = ik(arm[0], arm[1], L.upper, L.fore, arm[2]);
+    var elbow = r[2];
+    var hand = ptAt(elbow, L.fore, r[1]);
+    out += seg(arm[0], elbow, cls) + seg(elbow, hand, cls);
+  });
+
+  /* legs */
+  var g = f.ground !== undefined ? f.ground : GROUND;
+  var feet = f.feet || [[hip[0] - 5*s, g], [hip[0] + 5*s, g]];
+  var lbend = f.lbend || [-1, 1];
+  [[hpL, feet[0], lbend[0]], [hpR, feet[1], lbend[1]]].forEach(function(leg){
+    var r = ik(leg[0], leg[1], L.thigh, L.shin, leg[2]);
+    var knee = r[2];
+    var foot = ptAt(knee, L.shin, r[1]);
+    out += seg(leg[0], knee, cls) + seg(knee, foot, cls);
+  });
+
+  /* head */
+  out += '<circle class="'+cls+' fg-head" cx="'+head[0].toFixed(1)+'" cy="'+head[1].toFixed(1)+'" r="'+(L.head).toFixed(1)+'"/>';
+  /* nose tick shows where they are looking; omitted = facing the camera */
+  if(f.gaze !== undefined && f.gaze !== null){
+    var n1 = ptAt(head, L.head, f.gaze);
+    var n2 = ptAt(head, L.head + 4.5*s, f.gaze);
+    out += seg(n1, n2, cls + " fg-gaze");
+  }
+
+  if(rot){
+    out = '<g transform="rotate('+rot+' '+hip[0]+' '+hip[1]+')">' + out + '</g>';
+  }
+  return out;
+}
+
+/* ---------------- props ---------------- */
+var PROPS = {
+  ground: function(){ return '<path class="pr pr-ground" d="M10 '+GROUND+'H122"/>'; },
+  sun: function(){ return '<circle class="pr pr-sun" cx="66" cy="24" r="10"/><circle class="pr pr-sun-ring" cx="66" cy="24" r="16"/>'; },
+  sunHigh: function(){ return '<circle class="pr pr-sun" cx="66" cy="16" r="8"/>'; },
+  wall: function(){ return '<path class="pr pr-solid" d="M26 10V93"/>'; },
+  window: function(){ return '<rect class="pr pr-solid" x="12" y="20" width="20" height="40" rx="2"/><path class="pr pr-ray" d="M34 30H52M34 40H56M34 50H50"/>'; },
+  ledge: function(){ return '<path class="pr pr-solid" d="M34 74H100"/>'; },
+  step: function(){ return '<rect class="pr pr-solid" x="70" y="84" width="30" height="9" rx="1.5"/>'; },
+  shade: function(){ return '<rect class="pr pr-shade" x="10" y="8" width="52" height="85"/><path class="pr pr-dash" d="M62 8V93"/>'; },
+  arrowIn: function(){ return '<path class="pr pr-arr" d="M50 22h10m0 0-3-3m3 3-3 3M82 22H72m0 0 3-3m-3 3 3 3"/>'; },
+  arrowUp: function(){ return '<path class="pr pr-arr" d="M66 30v-12m0 0-4 4m4-4 4 4"/>'; },
+  arrowArc: function(){ return '<path class="pr pr-arr" d="M44 20a24 12 0 0 1 44 0"/><path class="pr pr-arr" d="M88 20l-4-4m4 4-5 2"/>'; },
+  arrowChin: function(){ return '<path class="pr pr-arr" d="M100 22H84m0 0 4-4m-4 4 4 4"/>'; },
+  camera: function(){ return '<rect class="pr pr-solid" x="10" y="80" width="16" height="10" rx="2"/><circle class="pr pr-solid" cx="18" cy="85" r="3"/>'; },
+  cameraStack: function(){ return '<g class="pr pr-solid"><rect x="12" y="30" width="12" height="8" rx="1.5"/><rect x="12" y="54" width="12" height="8" rx="1.5"/><rect x="12" y="78" width="12" height="8" rx="1.5"/></g>'; },
+  dog: function(){ return '<g class="pr pr-solid"><path d="M92 88h12M92 88v-5h12v5M104 83l3-3M92 83l-2-3"/><circle cx="107" cy="79" r="3"/></g>'; },
+  confetti: function(){ return '<g class="pr pr-dot"><circle cx="34" cy="20" r="1.6"/><circle cx="50" cy="12" r="1.6"/><circle cx="82" cy="16" r="1.6"/><circle cx="98" cy="26" r="1.6"/><circle cx="66" cy="8" r="1.6"/></g>'; },
+  lights: function(){ return '<g class="pr pr-dot"><circle cx="26" cy="16" r="2"/><circle cx="46" cy="10" r="2"/><circle cx="66" cy="8" r="2"/><circle cx="86" cy="10" r="2"/><circle cx="106" cy="16" r="2"/></g>'; },
+  sparkle: function(){ return '<path class="pr pr-arr" d="M84 34l0-6M84 34l5-3M84 34l-5-3"/>'; },
+  cups: function(){ return '<g class="pr pr-solid"><rect x="59" y="36" width="5" height="6" rx="1"/><rect x="68" y="36" width="5" height="6" rx="1"/></g>'; },
+  cards: function(){ return '<g class="pr pr-solid"><rect x="52" y="44" width="8" height="10" rx="1"/><rect x="72" y="44" width="8" height="10" rx="1"/></g>'; },
+  ghost: function(){ return ''; }
+};
+
+/* ---------------- pose library ---------------- */
+/* h = hands [[left],[right]], f = feet, g = gaze, ln = lean */
+function F(o){ return o; }
+var POSES = {
+  hug:        {figs:[F({x:54,ln:9,g:90,h:[[80,42],[80,52]]}), F({x:82,ln:-9,g:-90,h:[[56,52],[56,42]]})]},
+  lift:       {figs:[F({x:54,ln:6,g:90,h:[[78,48],[78,58]]}), F({x:80,y:48,ln:-6,g:-90,h:[[58,30],[58,38]],f:[[76,80],[84,82]]})]},
+  handsLow:   {figs:[F({x:48,g:25,h:[[60,70],[64,64]]}), F({x:84,g:-25,h:[[68,64],[72,70]]})]},
+  handsUp:    {figs:[F({x:48,g:90,h:[[60,70],[64,64]]}), F({x:84,g:-90,h:[[68,64],[72,70]]})]},
+  talk:       {figs:[F({x:50,g:90,h:[[42,62],[62,46]]}), F({x:82,g:-90,h:[[70,48],[90,62]]})]},
+  talkOne:    {figs:[F({x:48,g:90,h:[[40,62],[60,50]]}), F({x:82,g:-90,h:[[72,52],[90,62]]})], props:["camera","arrowChin"]},
+  prom:       {figs:[F({x:54,g:90,h:[[42,50],[74,48]]}), F({x:80,g:-90,h:[[60,48],[92,50]]})]},
+  shakeOut:   {figs:[F({x:52,g:90,h:[[40,68],[62,68]]}), F({x:80,g:-90,h:[[70,68],[92,68]]})]},
+  waistHold:  {figs:[F({x:54,ln:7,g:90,h:[[76,56],[78,60]]}), F({x:82,ln:-7,g:-90,h:[[58,60],[60,56]]})]},
+  walkToward: {figs:[F({x:54,h:[[44,64],[66,58]],f:[[46,93],[62,86]]}), F({x:78,h:[[66,58],[88,64]],f:[[70,86],[86,93]]})]},
+  walkAway:   {figs:[F({x:56,s:0.9,ground:86,h:[[48,60],[66,58]],f:[[50,86],[62,80]]}), F({x:76,s:0.9,ground:86,h:[[66,58],[84,60]],f:[[70,80],[82,86]]})], props:["arrowUp"]},
+  hipBump:    {figs:[F({x:54,ln:12,g:90,h:[[42,64],[68,60]],f:[[44,93],[60,88]]}), F({x:80,ln:-12,g:-90,h:[[66,60],[92,64]],f:[[74,88],[90,93]]})]},
+  lead:       {figs:[F({x:46,g:90,h:[[38,62],[70,50]],f:[[40,93],[52,90]]}), F({x:86,ln:-16,g:-90,h:[[70,50],[96,64]],f:[[92,93],[80,88]]})]},
+  spinOut:    {figs:[F({x:52,g:90,h:[[44,62],[70,26]]}), F({x:82,ln:10,g:-30,h:[[70,28],[94,58]],f:[[78,93],[90,88]]})]},
+  dance:      {figs:[F({x:54,g:90,h:[[78,38],[76,54]]}), F({x:82,g:-90,h:[[60,54],[58,38]]})]},
+  piggyback:  {figs:[F({x:62,s:0.78,ln:10,g:90,h:[[56,60],[76,60]]}), F({x:66,y:44,s:0.78,ln:6,g:90,h:[[54,48],[78,48]],f:[[56,66],[76,66]]})]},
+  run:        {figs:[F({x:54,ln:10,h:[[44,54],[64,52]],f:[[46,93],[64,86]]}), F({x:78,ln:10,h:[[68,52],[88,54]],f:[[68,86],[86,93]]})]},
+  chase:      {figs:[F({x:44,ln:14,h:[[34,52],[54,54]],f:[[36,93],[54,85]]}), F({x:84,ln:16,h:[[70,46],[96,56]],f:[[76,86],[96,93]]})]},
+  circleWalk: {figs:[F({x:50,g:90,h:[[62,66],[66,58]],f:[[44,93],[56,93]]}), F({x:82,g:-90,h:[[66,58],[70,66]],f:[[76,93],[88,93]]})]},
+  whisper:    {figs:[F({x:54,ln:13,g:90,h:[[76,46],[78,56]]}), F({x:82,ln:-4,g:-90,h:[[66,58],[92,62]]})], focus:[74,26]},
+  noseToNose: {figs:[F({x:54,ln:10,g:85,h:[[78,52],[80,60]]}), F({x:82,ln:-10,g:-85,h:[[56,60],[58,52]]})]},
+  stareDown:  {figs:[F({x:54,ln:10,g:85,h:[[78,52],[80,60]]}), F({x:82,ln:-10,g:-85,h:[[56,60],[58,52]]})], focus:[68,22]},
+  thumbWar:   {figs:[F({x:54,g:90,h:[[44,62],[66,52]]}), F({x:80,g:-90,h:[[66,52],[90,62]]})], focus:[66,52]},
+  dip:        {figs:[F({x:50,ln:14,g:90,h:[[74,40],[76,52]]}), F({x:74,ln:52,g:-140,h:[[62,44],[64,54]],f:[[80,93],[90,93]]})]},
+  foreheads:  {figs:[F({x:54,ln:13,g:70,h:[[78,50],[80,58]]}), F({x:82,ln:-13,g:-70,h:[[56,58],[58,50]]})], focus:[68,21]},
+  handChest:  {figs:[F({x:54,g:90,h:[[54,64],[76,42]]}), F({x:82,ln:-6,g:-90,h:[[66,58],[94,60]]})], focus:[76,42]},
+  kissShoulder:{figs:[F({x:54,ln:16,g:55,h:[[76,52],[78,60]]}), F({x:82,ln:-3,g:-90,h:[[66,58],[94,60]]})], focus:[74,33]},
+  holdFace:   {figs:[F({x:54,ln:8,g:90,h:[[78,24],[82,32]]}), F({x:84,ln:-6,g:-90,h:[[68,58],[96,60]]})], focus:[80,25]},
+  chinOnHead: {figs:[F({x:56,ln:10,g:60,h:[[76,50],[78,58]]}), F({x:78,s:0.82,ln:-6,g:-90,h:[[62,56],[88,58]]})], focus:[68,24]},
+  handNeck:   {figs:[F({x:54,ln:6,g:90,h:[[56,62],[80,30]]}), F({x:84,ln:-6,g:-90,h:[[68,58],[96,60]]})], focus:[80,29]},
+  kiss:       {figs:[F({x:54,ln:12,g:80,h:[[78,48],[80,58]]}), F({x:82,ln:-12,g:-80,h:[[56,58],[58,48]]})]},
+  backHug:    {figs:[F({x:58,ln:5,g:90,h:[[76,50],[78,58]]}), F({x:72,g:90,h:[[62,60],[86,60]]})]},
+  standAngled:{figs:[F({x:56,g:60,h:[[46,62],[74,58]]}), F({x:78,g:-60,h:[[62,58],[90,62]]})], focus:[66,36]},
+  facingCamera:{figs:[F({x:56,h:[[46,62],[72,60]]}), F({x:78,h:[[64,60],[90,62]]})]},
+  splitGaze:  {figs:[F({x:56,h:[[46,62],[74,58]]}), F({x:78,g:-90,h:[[62,58],[90,62]]})], focus:[80,26]},
+  weightBack: {figs:[F({x:56,ln:-5,h:[[46,62],[70,58]],f:[[48,93],[64,93]],lbend:[-1,-1]}), F({x:80,ln:-5,h:[[66,58],[92,62]],f:[[74,93],[90,93]]})], focus:[48,90]},
+  posture:    {figs:[F({x:56,ln:-3,h:[[46,62],[72,58]]}), F({x:80,ln:-3,h:[[66,58],[92,62]]})], props:["arrowUp"]},
+  elbowGap:   {figs:[F({x:56,h:[[42,60],[72,58]],abend:[-1,1]}), F({x:80,h:[[64,58],[94,60]]})], focus:[46,48]},
+  chinPush:   {figs:[F({x:58,s:1.1,ln:4,g:80,h:[[48,64],[74,60]]}), F({x:84,s:1.1,ln:-4,g:-80,h:[[70,60],[96,64]]})], props:["arrowChin"]},
+  leanWall:   {figs:[F({x:42,ln:-12,g:90,h:[[30,50],[58,54]]}), F({x:62,ln:-10,g:-90,h:[[48,54],[74,60]]})], props:["wall"]},
+  pocket:     {figs:[F({x:56,g:60,h:[[50,60],[74,58]]}), F({x:78,g:-60,h:[[62,58],[86,60]]})], focus:[50,60]},
+  sitGround:  {figs:[F({x:54,y:80,ln:8,g:90,h:[[68,74],[70,80]],f:[[38,90],[44,92]],lbend:[1,1]}), F({x:78,y:80,ln:-8,g:-90,h:[[62,80],[64,74]],f:[[94,90],[88,92]],lbend:[-1,-1]})]},
+  sitBetween: {figs:[F({x:78,y:76,ln:-6,g:-90,h:[[58,74],[60,80]],f:[[48,92],[54,88]],lbend:[1,1]}), F({x:62,y:82,ln:-16,g:-60,h:[[46,86],[52,82]],f:[[34,92],[40,90]],lbend:[1,1]})]},
+  sitKnees:   {figs:[F({x:54,y:80,ln:10,g:90,h:[[50,76],[62,74]],f:[[42,92],[48,92]],lbend:[1,1]}), F({x:80,y:80,ln:-10,g:-90,h:[[72,74],[84,76]],f:[[86,92],[92,92]],lbend:[-1,-1]})]},
+  lieBack:    {flat:true, figs:[F({x:80,y:44,rot:90}), F({x:80,y:70,rot:90})]},
+  sitEdge:    {figs:[F({x:58,y:60,ln:6,g:90,h:[[72,58],[74,64]],f:[[54,90],[60,92]],lbend:[1,1]}), F({x:76,y:60,ln:-6,g:-90,h:[[60,64],[62,58]],f:[[74,90],[80,92]],lbend:[1,1]})], props:["ledge"]},
+  headInLap:  {figs:[F({x:78,y:76,ln:-8,g:-90,h:[[64,80],[68,72]],f:[[60,92],[66,90]],lbend:[1,1]}), F({x:42,y:84,s:0.85,rot:-90})], focus:[70,80]},
+  ringChest:  {figs:[F({x:58,g:90,h:[[58,64],[76,42]]}), F({x:78,ln:-6,g:-90,h:[[62,58],[90,60]]})], props:["sparkle"], focus:[76,42]},
+  handsClasp: {figs:[F({x:54,g:90,h:[[44,62],[66,48]]}), F({x:80,g:-90,h:[[66,48],[90,62]]})], focus:[66,48]},
+  kissHand:   {figs:[F({x:56,ln:6,g:90,h:[[48,62],[70,30]]}), F({x:80,ln:-4,g:-90,h:[[70,30],[92,60]]})], focus:[70,30]},
+  hairTouch:  {figs:[F({x:58,ln:6,g:90,h:[[58,64],[76,26]]}), F({x:80,ln:-4,g:-90,h:[[66,58],[92,60]]})], focus:[76,26]},
+  fixTie:     {figs:[F({x:58,ln:8,g:90,h:[[74,40],[76,46]]}), F({x:80,ln:-4,g:-90,h:[[66,60],[92,60]]})], focus:[75,42]},
+  waistTouch: {figs:[F({x:56,g:60,h:[[46,62],[73,58]]}), F({x:80,g:-60,h:[[64,58],[92,62]]})], focus:[73,58]},
+  backlit:    {figs:[F({x:54,ln:7,g:90,h:[[78,52],[80,60]]}), F({x:82,ln:-7,g:-90,h:[[56,60],[58,52]]})], props:["sun"]},
+  kissBacklit:{figs:[F({x:54,ln:12,g:80,h:[[78,48],[80,58]]}), F({x:82,ln:-12,g:-80,h:[[56,58],[58,48]]})], props:["sun"]},
+  sunFace:    {figs:[F({x:56,ln:-6,g:170,h:[[46,62],[72,58]]}), F({x:80,ln:-6,g:170,h:[[66,58],[92,62]]})], props:["sunHigh"]},
+  shadeEdge:  {figs:[F({x:52,g:90,h:[[42,62],[68,58]]}), F({x:74,g:-90,h:[[62,58],[86,62]]})], props:["shade"]},
+  rotatePair: {figs:[F({x:56,g:70,h:[[46,62],[72,58]]}), F({x:80,g:-70,h:[[64,58],[92,62]]})], props:["arrowArc"]},
+  windowLight:{figs:[F({x:60,g:-90,h:[[48,58],[70,60]]}), F({x:82,g:-90,h:[[70,60],[94,62]]})], props:["window"]},
+  longExpo:   {figs:[F({x:54,ln:9,g:90,h:[[78,50],[80,58]]}), F({x:82,ln:-9,g:-90,h:[[56,58],[58,50]]})], props:["lights"]},
+  firstLook:  {figs:[F({x:46,g:-90,h:[[36,62],[56,60]]}), F({x:82,ln:-14,g:-90,h:[[58,36],[92,62]],f:[[88,93],[76,88]]})], focus:[56,36]},
+  vows:       {figs:[F({x:50,g:90,h:[[52,50],[58,48]]}), F({x:82,g:-90,h:[[74,48],[80,50]]})], props:["cards"]},
+  aisle:      {figs:[F({x:54,h:[[44,64],[66,58]],f:[[46,93],[62,86]]}), F({x:78,h:[[66,58],[88,64]],f:[[70,86],[86,93]]})], props:["confetti"]},
+  alone:      {figs:[F({x:62,s:0.62,ln:6,g:90,h:[[70,64],[71,70]]}), F({x:74,s:0.62,ln:-6,g:-90,h:[[65,70],[66,64]]})]},
+  gazeDown:   {figs:[F({x:66,s:1.15,g:25,h:[[56,68],[76,68]]})], focus:[66,58]},
+  toast:      {figs:[F({x:54,g:90,h:[[44,62],[62,40]]}), F({x:80,g:-90,h:[[70,40],[90,62]]})], props:["cups"]},
+  groupFeet:  {figs:[F({x:30,s:0.7,g:90,h:[[24,70],[36,70]]}), F({x:56,ln:5,g:90,h:[[66,58],[68,62]]}), F({x:76,ln:-5,g:-90,h:[[64,62],[66,58]]}), F({x:102,s:0.7,g:-90,h:[[96,70],[108,70]]})], props:["arrowIn"]},
+  nightKiss:  {figs:[F({x:54,ln:12,g:80,h:[[78,48],[80,58]]}), F({x:82,ln:-12,g:-80,h:[[56,58],[58,48]]})], props:["lights"]},
+  frozen:     {figs:[F({x:44,h:[[36,62],[52,62]]}), F({x:88,h:[[80,62],[96,62]]})], props:["arrowIn"]},
+  gapClose:   {figs:[F({x:44,g:90,h:[[36,62],[52,62]]}), F({x:88,g:-90,h:[[80,62],[96,62]]})], props:["arrowIn"]},
+  heightStep: {figs:[F({x:56,ln:6,g:90,h:[[74,48],[76,56]]}), F({x:84,s:0.8,ground:84,ln:-6,g:-90,h:[[62,56],[64,48]]})], props:["step"]},
+  fingertips: {figs:[F({x:56,g:60,h:[[46,62],[73,58]]}), F({x:80,g:-60,h:[[64,58],[92,62]]})], focus:[73,58]},
+  threeHeights:{figs:[F({x:60,ln:6,g:90,h:[[76,50],[78,58]]}), F({x:80,ln:-6,g:-90,h:[[62,58],[64,50]]})], props:["cameraStack"]},
+  dogFrame:   {figs:[F({x:52,ln:8,g:90,h:[[68,50],[70,58]]}), F({x:72,ln:-8,g:-90,h:[[54,58],[56,50]]})], props:["dog"]}
+};
+
+/* build one SVG for a pose */
+function poseSVG(key, label){
+  var p = POSES[key] || POSES.hug;
+  var body = "";
+  var props = p.props || [];
+  if(props.indexOf("shade") !== -1) body += PROPS.shade();
+  if(!p.flat) body += PROPS.ground();
+  props.forEach(function(n){ if(n !== "shade" && PROPS[n]) body += PROPS[n](); });
+  p.figs.forEach(function(f, i){
+    var g = {x:f.x, y:f.y, s:f.s, rot:f.rot, lean:f.ln, gaze:f.g,
+             hands:f.h, feet:f.f, abend:f.abend, lbend:f.lbend, ground:f.ground};
+    body += drawFigure(g, i === 0 ? "a" : "b");
+  });
+  if(p.focus){
+    body += '<circle class="pr pr-focus" cx="'+p.focus[0]+'" cy="'+p.focus[1]+'" r="8"/>';
+  }
+  return '<svg class="pose" viewBox="0 0 '+FRAME_W+' '+FRAME_H+'" role="img" aria-label="'
+    + (label || "Pose diagram").replace(/"/g,"") + '" preserveAspectRatio="xMidYMid meet">'
+    + body + '</svg>';
+}
+
+
+/* one pose diagram per prompt, in the same order as P above */
+var POSE_KEYS = [
+/* warm-up */   "hug","handsLow","talk","talk","prom","shakeOut","walkToward","waistHold",
+/* movement */  "walkToward","walkAway","hipBump","lead","spinOut","dance","piggyback","run","chase","circleWalk","lead",
+/* laughter */  "whisper","talk","stareDown","lift","noseToNose","stareDown","noseToNose","thumbWar","talk","dip",
+/* close */     "foreheads","handChest","kissShoulder","holdFace","noseToNose","chinOnHead","handNeck","whisper","kiss","backHug",
+/* standing */  "standAngled","weightBack","chinPush","facingCamera","splitGaze","leanWall","pocket","posture","elbowGap",
+/* sitting */   "sitGround","sitBetween","sitKnees","lieBack","sitEdge","headInLap",
+/* hands */     "ringChest","handsClasp","ringChest","kissHand","hairTouch","fixTie","waistTouch",
+/* light */     "backlit","kissBacklit","sunFace","shadeEdge","rotatePair","windowLight","longExpo",
+/* day */       "firstLook","vows","aisle","alone","gazeDown","toast","groupFeet","nightKiss",
+/* rescue */    "frozen","talkOne","heightStep","gazeDown","chinPush","fingertips","gapClose","lead","dogFrame","threeHeights"
+];
+
+var FLOW_POSES = [
+  ["hug","dance","whisper","foreheads","facingCamera"],
+  ["alone","standAngled","foreheads","handsClasp","ringChest"],
+  ["walkToward","talk","hug","spinOut","foreheads"],
+  ["backlit","walkToward","kissBacklit","backlit","sitGround"],
+  ["gazeDown","firstLook","firstLook","hug","walkAway"],
+  ["talk","handsLow","handsUp","lead","facingCamera"]
+];
+
+var CRAFT_POSES = [
+  ["standAngled","weightBack","elbowGap","gapClose","leanWall"],
+  ["pocket","fingertips","handsClasp","ringChest"],
+  ["chinPush","facingCamera","gazeDown","whisper"],
+  ["backlit","shadeEdge","windowLight","rotatePair"],
+  ["threeHeights","talkOne","frozen","kiss","walkToward"]
+];
+
 /* build objects */
 var PROMPTS = P.map(function(row, i){
-  return {id:"p"+i, cat:row[0], say:row[1], watch:row[2], then:row[3]};
+  return {id:"p"+i, cat:row[0], say:row[1], watch:row[2], then:row[3], pose:POSE_KEYS[i] || "hug"};
 });
 var CAT_BY_ID = {};
 CATS.forEach(function(c){ CAT_BY_ID[c.id] = c; });
@@ -718,6 +1017,7 @@ function drawPrompt(){
 function setCard(p){
   current = p;
   $("deckCode").textContent = CAT_BY_ID[p.cat].code;
+  $("deckFig").innerHTML = poseSVG(p.pose, p.say);
   $("deckSay").textContent = p.say;
   $("deckWatch").textContent = p.watch;
   $("deckThen").textContent = p.then;
@@ -761,6 +1061,10 @@ function promptCard(p){
   var top = document.createElement("div");
   top.className = "item-top";
 
+  var thumb = document.createElement("div");
+  thumb.className = "thumb";
+  thumb.innerHTML = poseSVG(p.pose, p.say);
+
   var line = document.createElement("p");
   line.className = "line";
   line.textContent = p.say;
@@ -772,6 +1076,7 @@ function promptCard(p){
   star.textContent = favs.indexOf(p.id) !== -1 ? "★" : "☆";
   star.addEventListener("click", function(){ toggleFav(p.id); });
 
+  top.appendChild(thumb);
   top.appendChild(line);
   top.appendChild(star);
 
@@ -860,7 +1165,7 @@ function renderSaved(){
 /* ---------------- flows ---------------- */
 (function renderFlows(){
   var host = $("flows");
-  FLOWS.forEach(function(f){
+  FLOWS.forEach(function(f, fi){
     var el = document.createElement("article");
     el.className = "flow";
 
@@ -873,7 +1178,7 @@ function renderSaved(){
 
     var ol = document.createElement("ol");
     ol.className = "steps";
-    f.steps.forEach(function(s){
+    f.steps.forEach(function(s, si){
       var li = document.createElement("li");
       var d = document.createElement("div");
       var a = document.createElement("p");
@@ -884,6 +1189,10 @@ function renderSaved(){
       b.textContent = s[1];
       d.appendChild(a); d.appendChild(b);
       li.appendChild(d);
+      var th = document.createElement("div");
+      th.className = "thumb step-thumb";
+      th.innerHTML = poseSVG((FLOW_POSES[fi] || [])[si], s[0]);
+      li.appendChild(th);
       ol.appendChild(li);
     });
 
@@ -897,20 +1206,26 @@ function renderSaved(){
 /* ---------------- craft ---------------- */
 (function renderCraft(){
   var host = $("craft");
-  CRAFT.forEach(function(group){
+  CRAFT.forEach(function(group, gi){
     var wrap = document.createElement("section");
     wrap.className = "craft-group";
     var h = document.createElement("h3");
     h.textContent = group[0];
     wrap.appendChild(h);
-    group[1].forEach(function(t){
+    group[1].forEach(function(t, ti){
       var tip = document.createElement("div");
       tip.className = "tip";
+      var th = document.createElement("div");
+      th.className = "thumb tip-thumb";
+      th.innerHTML = poseSVG((CRAFT_POSES[gi] || [])[ti], t[0]);
+      var body = document.createElement("div");
+      body.className = "tip-body";
       var h4 = document.createElement("h4");
       h4.textContent = t[0];
       var p = document.createElement("p");
       p.textContent = t[1];
-      tip.appendChild(h4); tip.appendChild(p);
+      body.appendChild(h4); body.appendChild(p);
+      tip.appendChild(th); tip.appendChild(body);
       wrap.appendChild(tip);
     });
     host.appendChild(wrap);
